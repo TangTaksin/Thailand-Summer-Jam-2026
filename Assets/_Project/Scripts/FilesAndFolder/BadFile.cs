@@ -7,15 +7,11 @@ public class BadFile : BaseFile, IEffectable
 
     public void ApplyEffect(ScreenMateStats stats)
     {
-
-        if (!isLoaded)
+        if (curloadSteps == 0)
         {
-            Debug.Log("File is not loaded yet.");
-            return;
+            stats.UpdateCortisol(damage);
+            Destroy(gameObject);
         }
-
-        stats.UpdateCortisol(damage);
-        Destroy(gameObject);
     }
 
 }

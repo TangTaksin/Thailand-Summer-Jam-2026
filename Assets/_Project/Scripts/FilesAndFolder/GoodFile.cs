@@ -6,13 +6,11 @@ public class GoodFile : BaseFile, IEffectable
     public float healAmount = 15f;
     public void ApplyEffect(ScreenMateStats stats)
     {
-        if (!isLoaded)
+        if (curloadSteps == 0)
         {
-            Debug.Log("File is not loaded yet.");
-            return;
+            stats.UpdateCortisol(-healAmount);
+            Destroy(gameObject);
         }
 
-        stats.UpdateCortisol(-healAmount);
-        Destroy(gameObject);
     }
 }
