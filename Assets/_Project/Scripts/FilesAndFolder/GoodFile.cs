@@ -1,34 +1,18 @@
 using UnityEngine;
 
-public class GoodFile : MonoBehaviour, IEffectable
+public class GoodFile : BaseFile, IEffectable
 {
-    public float heal = 15f;
-
-    private bool isDragging = false;
-    private Vector3 offset;
+    [Header("Healing Effect")]
+    public float healAmount = 15f;
     public void ApplyEffect(ScreenMateStats stats)
     {
-        stats.UpdateCortisol(-heal);
+        if (!isLoaded)
+        {
+            Debug.Log("File is not loaded yet.");
+            return;
+        }
+
+        stats.UpdateCortisol(-healAmount);
         Destroy(gameObject);
-    }
-
-    private void OnMouseDown()
-    {
-        isDragging = true;
-
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        offset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
-    }
-
-    private void OnMouseDrag()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePos.x + offset.x, mousePos.y + offset.y, transform.position.z);
-    }
-
-    private void OnMouseUp()
-    {
-        isDragging = false;
-
     }
 }
