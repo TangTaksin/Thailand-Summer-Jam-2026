@@ -1,41 +1,24 @@
 using UnityEngine;
 
-/// <summary>
-/// Spawns files using a Gacha/Pity system.
-/// </summary>
 public class FileSpawner : MonoBehaviour
 {
-    // ─────────────────────────────────────────
-    // Inspector Fields
-    // ─────────────────────────────────────────
-
     [Header("Gacha System Settings")]
-    [Tooltip("Core File prefab")]
     [SerializeField] private GameObject _coreFilePrefab;
-
-    [Tooltip("Regular file prefabs")]
     [SerializeField] private GameObject[] _regularFilePrefabs;
 
-    [Tooltip("Drop chance for Core File (0–100%)")]
     [Range(0f, 100f)]
     [SerializeField] private float _coreFileDropRate = 5f;
-
-    [Tooltip("Guaranteed Core File after N rolls")]
     [SerializeField] private int _guaranteedPityCount = 10;
+
+    [Header("Spawn Settings")]
+    [Tooltip("จำนวนไฟล์ที่จะสร้างต่อการกดหนึ่งครั้ง")]
+    [SerializeField] private int _spawnCount = 1;
 
     [Header("Spawn Area")]
     [SerializeField] private Vector2 _minBounds = new Vector2(-7f, -3f);
     [SerializeField] private Vector2 _maxBounds = new Vector2(7f,  4f);
 
-    // ─────────────────────────────────────────
-    // Private State
-    // ─────────────────────────────────────────
-
     private int _currentPityCounter;
-
-    // ─────────────────────────────────────────
-    // Unity Lifecycle
-    // ─────────────────────────────────────────
 
     private void OnEnable()
     {
@@ -47,34 +30,29 @@ public class FileSpawner : MonoBehaviour
         ActionCommands.OnNewFileCommand -= SpawnRandomFile;
     }
 
-    // ─────────────────────────────────────────
-    // Spawn Logic
-    // ─────────────────────────────────────────
-
     private void SpawnRandomFile()
     {
         if (!ValidatePrefabs()) return;
 
-        GameObject prefabToSpawn = ResolvePrefab();
+        // วนลูปตามจำนวนที่กำหนดไว้ใน _spawnCount
+        for (int i = 0; i < _spawnCount; i++)
+        {
+            GameObject prefabToSpawn = ResolvePrefab();
 
-        Vector3 spawnPosition = new Vector3(
-            Random.Range(_minBounds.x, _maxBounds.x),
-            Random.Range(_minBounds.y, _maxBounds.y),
-            0f
-        );
+            Vector3 spawnPosition = new Vector3(
+                Random.Range(_minBounds.x, _maxBounds.x),
+                Random.Range(_minBounds.y, _maxBounds.y),
+                0f
+            );
 
-        Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+            Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        }
     }
 
-    /// <summary>
-    /// Pure gacha logic — decides which prefab to spawn.
-    /// Mutates _currentPityCounter as a side-effect.
-    /// </summary>
     private GameObject ResolvePrefab()
     {
         _currentPityCounter++;
 
-        // Pity guarantee
         if (_currentPityCounter >= _guaranteedPityCount)
         {
             ResetPity();
@@ -82,7 +60,6 @@ public class FileSpawner : MonoBehaviour
             return _coreFilePrefab;
         }
 
-        // Roll for SSR
         float roll = Random.Range(0f, 100f);
         if (roll <= _coreFileDropRate)
         {
@@ -91,17 +68,11 @@ public class FileSpawner : MonoBehaviour
             return _coreFilePrefab;
         }
 
-        // Regular file
         int index = Random.Range(0, _regularFilePrefabs.Length);
-        Debug.Log($"[FileSpawner] 📄 Regular file (pity: {_currentPityCounter}/{_guaranteedPityCount})");
         return _regularFilePrefabs[index];
     }
 
     private void ResetPity() => _currentPityCounter = 0;
-
-    // ─────────────────────────────────────────
-    // Validation
-    // ─────────────────────────────────────────
 
     private bool ValidatePrefabs()
     {
@@ -112,10 +83,6 @@ public class FileSpawner : MonoBehaviour
         }
         return true;
     }
-
-    // ─────────────────────────────────────────
-    // Editor Gizmos
-    // ─────────────────────────────────────────
 
     private void OnDrawGizmosSelected()
     {
