@@ -35,11 +35,11 @@ public class ScreenMateStats : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        IEffectable effect = other.GetComponent<IEffectable>();
+        IStatModifier effect = other.GetComponent<IStatModifier>();
 
         if (effect != null)
         {
-            effect.ApplyEffect(this);
+            effect.ApplyModifier(this);
         }
     }
 }

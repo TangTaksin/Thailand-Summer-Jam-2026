@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class GoodFile : BaseFile, IEffectable
+public class GoodFile : BaseFile, IStatModifier
 {
     [Header("Healing Effect")]
     public float healAmount = 15f;
-    public void ApplyEffect(ScreenMateStats stats)
+    public void ApplyModifier(ScreenMateStats stats)
     {
         if (curloadSteps == 0)
         {

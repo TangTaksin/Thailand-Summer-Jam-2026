@@ -4,7 +4,10 @@ using UnityEngine;
 public class BaseFile : MonoBehaviour
 {
     [Header("File Status")]
-    [SerializeField] protected int maxloadSteps = 5;
+    [SerializeField] protected int minSteps = 3;
+    [SerializeField] protected int maxSteps = 7;
+
+    protected int currentMaxSteps;
     protected int curloadSteps;
 
     [Header("File Name")]
@@ -28,28 +31,28 @@ public class BaseFile : MonoBehaviour
     protected virtual void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        
+
         GenerateComplexBrokenName();
+        GenerateRandomLoadSteps();
         spriteRenderer.sprite = baseSprites;
-        curloadSteps = maxloadSteps;
         LoadFile();
     }
 
     protected void OnEnable()
     {
-        RefreshCommand.OnRefreshCommand += ReduceloadSteps;
+        ActionCommands.OnRefreshCommand += ReduceloadSteps;
     }
 
     protected virtual void OnDisable()
     {
-        RefreshCommand.OnRefreshCommand -= ReduceloadSteps;
+        ActionCommands.OnRefreshCommand -= ReduceloadSteps;
     }
 
     public void ReduceloadSteps()
     {
         if (curloadSteps == 0)
         {
-            curloadSteps = maxloadSteps;
+            GenerateRandomLoadSteps();
             GenerateComplexBrokenName();
         }
         else
@@ -59,6 +62,13 @@ public class BaseFile : MonoBehaviour
 
         LoadFile();
     }
+
+    private void GenerateRandomLoadSteps()
+    {
+        currentMaxSteps = Random.Range(minSteps, maxSteps + 1);
+        curloadSteps = currentMaxSteps;
+    }
+    
 
     private void GenerateComplexBrokenName()
     {
