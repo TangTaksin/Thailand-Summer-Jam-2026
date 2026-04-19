@@ -8,11 +8,12 @@ public class BaseFile : MonoBehaviour
     [SerializeField] protected int maxSteps = 7;
 
     protected int currentMaxSteps;
-    protected int curloadSteps;
+    public int curloadSteps { get; protected set; }
 
     [Header("File Name")]
     protected string brokenFileName;
     public string loadedFileName = "NewFile.exe";
+
 
     [Header("Name Generation")]
     private readonly string[] extensions = { ".tmp", ".rov", ".dll", ".log", ".dat" };
@@ -116,5 +117,22 @@ public class BaseFile : MonoBehaviour
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = new Vector3(mousePos.x + offset.x, mousePos.y + offset.y, transform.position.z);
+    }
+
+    protected virtual void OnMouseUp()
+    {
+
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+
+        foreach (var hit in hits)
+        {
+            BaseFolder folder = hit.GetComponent<BaseFolder>();
+
+            if (folder != null)
+            {
+                folder.ReceiveFile(this);
+                break;
+            }
+        }
     }
 }
