@@ -1,15 +1,14 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class ScreenMateMovement : MonoBehaviour
+public class ScreenMateMovement : ScreenElements
 {
     // สร้างหมวดหมู่สถานะ (State) ของตัวละคร
     public enum MateState
     {
         Walk,
         Idle,
-        Falling,
-        Dragged
+        Falling
     }
 
     [Header("Current State")]
@@ -40,7 +39,7 @@ public class ScreenMateMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (currentState == MateState.Dragged) return;
+        if (element_state != ScreenElementState.Normal) return;
 
         if (rb.linearVelocity.y < -0.1f)
         {
@@ -118,27 +117,5 @@ public class ScreenMateMovement : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
-    }
-
-    private void OnMouseDown()
-    {
-        currentState = MateState.Dragged;
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.linearVelocity = Vector2.zero;
-
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        offset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
-    }
-
-    private void OnMouseDrag()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePos.x + offset.x, mousePos.y + offset.y, transform.position.z);
-    }
-
-    private void OnMouseUp()
-    {
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        currentState = MateState.Falling;
     }
 }

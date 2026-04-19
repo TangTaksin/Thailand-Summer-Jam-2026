@@ -329,7 +329,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 319457246}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac260003544f07b4a89b4cfc7a5b73eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 393fe27964321b245af79ed4433da546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoodFile
   heal: 15
@@ -471,7 +471,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 350145746}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 601e6a682210cb245a1940e58dced5c5, type: 3}
+  m_Script: {fileID: 11500000, guid: eaa5b1069c85620478a7d2acaf4f9a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BadFile
   damage: 20
@@ -577,7 +577,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 667630919}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
@@ -801,6 +802,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &667630918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 667630919}
+  - component: {fileID: 667630920}
+  m_Layer: 0
+  m_Name: Cursor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &667630919
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667630918}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 371140853}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &667630920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667630918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7fdc506ea4b8344fbd22fbde589fc23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CursorManager
+  inSelection: []
 --- !u!1 &674705299
 GameObject:
   m_ObjectHideFlags: 0
@@ -829,7 +875,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 674705299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 601e6a682210cb245a1940e58dced5c5, type: 3}
+  m_Script: {fileID: 11500000, guid: eaa5b1069c85620478a7d2acaf4f9a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BadFile
   damage: 20
@@ -1144,7 +1190,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1389537802}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac260003544f07b4a89b4cfc7a5b73eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 393fe27964321b245af79ed4433da546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoodFile
   heal: 15
@@ -1326,10 +1372,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1553874458}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16a1513a7c549094ebe8f0ce8a61f8f2, type: 3}
+  m_Script: {fileID: 11500000, guid: c4075604a1ab91f439647a0f0914b7fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenMateMovement
-  currentState: 0
+  currentState: 1
   moveSpeed: 2
   leftBound: -7
   rightBound: 7
@@ -1410,7 +1456,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1553874458}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec6835e976491fe4cbd6e8cec8ffa1cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e4950266cba04643aa72d0d46569729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenMateStats
   cortisolSlider: {fileID: 1628993680}
@@ -1480,7 +1526,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1626823186}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 601e6a682210cb245a1940e58dced5c5, type: 3}
+  m_Script: {fileID: 11500000, guid: eaa5b1069c85620478a7d2acaf4f9a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BadFile
   damage: 20
@@ -1786,7 +1832,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1693629305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac260003544f07b4a89b4cfc7a5b73eb, type: 3}
+  m_Script: {fileID: 11500000, guid: 393fe27964321b245af79ed4433da546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoodFile
   heal: 15
@@ -1928,7 +1974,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1694927480}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 601e6a682210cb245a1940e58dced5c5, type: 3}
+  m_Script: {fileID: 11500000, guid: eaa5b1069c85620478a7d2acaf4f9a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BadFile
   damage: 20
