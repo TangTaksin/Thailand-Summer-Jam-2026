@@ -11,7 +11,7 @@ public class BaseFile : MonoBehaviour
     protected int curloadSteps;
 
     [Header("File Name")]
-    private string brokenFileName;
+    protected string brokenFileName;
     public string loadedFileName = "NewFile.exe";
 
     [Header("Name Generation")]
@@ -68,9 +68,9 @@ public class BaseFile : MonoBehaviour
         currentMaxSteps = Random.Range(minSteps, maxSteps + 1);
         curloadSteps = currentMaxSteps;
     }
-    
 
-    private void GenerateComplexBrokenName()
+
+    protected virtual void GenerateComplexBrokenName()
     {
         string hexCode = "0x" + Random.Range(0x0100, 0xFFFF).ToString("X");
         string ext = extensions[Random.Range(0, extensions.Length)];

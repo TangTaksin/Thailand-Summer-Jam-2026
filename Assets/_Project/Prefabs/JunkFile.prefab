@@ -145,7 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JunkFile
   minSteps: 3
   maxSteps: 8
-  loadedFileName: JunkFile.exe
+  loadedFileName: JunkFile
   fileNameTextMeshPro: {fileID: 3939354997920605599}
   curloadStepsTextMeshProUI: {fileID: 4297672128700488923}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
