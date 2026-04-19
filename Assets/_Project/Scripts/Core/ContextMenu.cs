@@ -78,7 +78,17 @@ public class ContextMenu : MonoBehaviour
     {
         if (hoveredFile != null)
         {
-            Debug.Log("🗑️ ลบไฟล์สำเร็จ: " + hoveredFile.gameObject.name);
+            if (hoveredFile is BadFile badFile)
+            {
+                if (badFile.CurrentHp != 0)
+                {
+                    Debug.Log("ไม่สามารถลบไวรัสได้! ต้องทำให้มัน Stun (HP 0) ก่อน");
+                    CloseMenu();
+                    return;
+                }
+            }
+
+            Debug.Log("ลบไฟล์สำเร็จ: " + hoveredFile.gameObject.name);
             Destroy(hoveredFile.gameObject);
         }
         else
@@ -87,7 +97,6 @@ public class ContextMenu : MonoBehaviour
         }
 
         ActionCommands.OnDeleteCommand?.Invoke();
-
         CloseMenu();
     }
 }

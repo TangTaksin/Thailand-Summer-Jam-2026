@@ -5,6 +5,7 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     [Header("HP System")]
     [SerializeField] private int _maxHp = 3;
     [SerializeField] private int _currentHp;
+    public int CurrentHp => _currentHp;
     [SerializeField] private bool _isStunned = false;
 
     [Header("Combat Settings")]
