@@ -48,7 +48,7 @@ public class BaseFile : MonoBehaviour
         ActionCommands.OnRefreshCommand -= ReduceloadSteps;
     }
 
-    public void ReduceloadSteps()
+    protected virtual void ReduceloadSteps()
     {
         if (curloadSteps == 0)
         {
@@ -78,7 +78,7 @@ public class BaseFile : MonoBehaviour
         brokenFileName = hexCode + ext;
     }
 
-    public virtual void LoadFile()
+    protected virtual void LoadFile()
     {
         if (curloadSteps == 0)
         {
