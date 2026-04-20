@@ -9,11 +9,13 @@ public class ContextMenu : MonoBehaviour
     public GameObject contextMenuPanel;
     public GameObject[] defaultMenuOptions;
     public GameObject emptyBinButton;
+    public GameObject formatButton;
 
     [Header("Settings")]
     [SerializeField] private int _requiredFiles = 10;
 
     private BinFolder _targetBin;
+    private CoreFolder _targetCoreFolder;
     private BaseFile hoveredFile;
 
     private void Start()
@@ -22,6 +24,7 @@ public class ContextMenu : MonoBehaviour
         {
             contextMenuPanel.SetActive(false);
             emptyBinButton.SetActive(false);
+            formatButton.SetActive(false);
         }
     }
 
@@ -56,35 +59,46 @@ public class ContextMenu : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
         _targetBin = null;
+        _targetCoreFolder = null;
         hoveredFile = null;
 
         if (hit.collider != null)
         {
             hoveredFile = hit.collider.GetComponent<BaseFile>();
             _targetBin = hit.collider.GetComponent<BinFolder>();
+            _targetCoreFolder = hit.collider.GetComponent<CoreFolder>();
         }
 
         UpdateMenuOptions();
-
         contextMenuPanel.SetActive(true);
     }
 
     private void UpdateMenuOptions()
     {
+        if (emptyBinButton != null) emptyBinButton.SetActive(false);
+        if (formatButton != null) formatButton.SetActive(false);
+
         if (_targetBin != null)
         {
             emptyBinButton.SetActive(true);
             ToggleDefaultOptions(false);
 
             Button btn = emptyBinButton.GetComponent<Button>();
+            if (btn != null) btn.interactable = _targetBin.StoredFileCount >= 10;
+        }
+        else if (_targetCoreFolder != null)
+        {
+            formatButton.SetActive(true);
+            ToggleDefaultOptions(false);
+
+            Button btn = formatButton.GetComponent<Button>();
             if (btn != null)
             {
-                btn.interactable = _targetBin.StoredFileCount >= _requiredFiles;
+                btn.interactable = _targetCoreFolder.TargetCount == 0;
             }
         }
         else
         {
-            emptyBinButton.SetActive(false);
             ToggleDefaultOptions(true);
         }
     }
@@ -139,5 +153,11 @@ public class ContextMenu : MonoBehaviour
             ActionCommands.OnEmptyBinCommand?.Invoke();
             CloseMenu();
         }
+    }
+
+    public void OnClick_FormatCommand()
+    {
+        ActionCommands.OnFormatCommand?.Invoke();
+        CloseMenu();
     }
 }
