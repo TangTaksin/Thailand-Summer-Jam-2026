@@ -1,4 +1,6 @@
 using UnityEngine;
+using TMPro;
+using System.Collections;
 
 public class FileSpawner : MonoBehaviour
 {
@@ -17,6 +19,23 @@ public class FileSpawner : MonoBehaviour
     [SerializeField] private Vector2 _minBounds = new Vector2(-7f, -3f);
     [SerializeField] private Vector2 _maxBounds = new Vector2(7f, 4f);
 
+    [Header("Indirect Feedback")]
+    [SerializeField] private SpriteRenderer _mateRenderer; // ลาก Sprite น้องมาใส่
+    [SerializeField] private Color _readyColor = new Color(0.5f, 1f, 0.5f); // สีตอนใกล้ดรอป (เขียวอ่อน)
+    [SerializeField] private float _shakeIntensity = 0.05f;
+
+    [Header("System Notification Text")]
+    [SerializeField] private TextMeshPro _terminalText;
+    private Coroutine _messageRoutine;
+    // [TextArea(2, 5)]
+    // [SerializeField]
+    // private string[] _progressMessages = {
+    //     "[System] Scanning for core remnants...",      // 0-30%
+    //     "[System] Core data fragments detected.",      // 31-70%
+    //     "[Warning] High core density localized!",      // 71-90%
+    //     "[Danger] Core extraction imminent!"           // 91-99%
+    // };
+
     private int _currentPityCounter;
 
     private void OnEnable()
@@ -31,13 +50,18 @@ public class FileSpawner : MonoBehaviour
         ActionCommands.OnFileEaten -= HandleCoreFileDrop;
     }
 
+    private void Update()
+    {
+        ApplyIndirectFeedback();
+    }
+
     private void SpawnRandomFile()
     {
         if (_spawnTable == null) return;
 
         for (int i = 0; i < _spawnCount; i++)
         {
-            GameObject prefabToSpawn = _spawnTable.Pick(); 
+            GameObject prefabToSpawn = _spawnTable.Pick();
             if (prefabToSpawn == null) continue;
 
             SpawnAtPosition(prefabToSpawn, GetRandomSpawnPos());
@@ -56,12 +80,34 @@ public class FileSpawner : MonoBehaviour
         if (isPityTriggered || roll <= _coreFileDropRate)
         {
             ResetPity();
-            Debug.Log(isPityTriggered ? "🎉 Pity! Core Dropped." : "✨ Lucky! Core Dropped.");
+            ShowMessage("[Success] Core.exe successfully extracted.");
             SpawnAtPosition(_coreFilePrefab, eatenFile.transform.position);
         }
         else
         {
             Debug.Log($"[Gacha] Pity Count: {_currentPityCounter}/{_guaranteedPityCount}");
+        }
+    }
+
+    private void ShowMessage(string msg)
+    {
+        if (_terminalText == null) return;
+        if (_messageRoutine != null)
+            StopCoroutine(_messageRoutine);
+
+        _messageRoutine = StartCoroutine(ShowMessageRoutine(msg, 5f));
+    }
+
+    private void ApplyIndirectFeedback()
+    {
+        if (_mateRenderer == null) return;
+
+        float progress = (float)_currentPityCounter / _guaranteedPityCount;
+        _mateRenderer.color = Color.Lerp(Color.white, _readyColor, progress);
+        if (progress > 0.7f)
+        {
+            float currentShake = _shakeIntensity * progress;
+            _mateRenderer.transform.localPosition += (Vector3)Random.insideUnitCircle * currentShake;
         }
     }
 
@@ -81,6 +127,16 @@ public class FileSpawner : MonoBehaviour
     }
 
     private void ResetPity() => _currentPityCounter = 0;
+
+    private IEnumerator ShowMessageRoutine(string msg, float duration)
+    {
+        _terminalText.text = msg;
+        _terminalText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(duration);
+
+        _terminalText.gameObject.SetActive(false);
+    }
 
     private void OnDrawGizmosSelected()
     {
