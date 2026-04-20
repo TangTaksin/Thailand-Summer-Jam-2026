@@ -1,62 +1,66 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ScreenMateStats : MonoBehaviour
 {
-    public Slider cortisolSlider;
-    public float maxCortisol = 100f;
+    public Slider _cortisolSlider;
+    public float _maxCortisol = 100f;
 
     [Header("Passive Increase Settings")]
-    public float passiveIncreaseRate = 2f;
+    public float _passiveIncreaseRate = 2f;
 
-    private float currentCortisol = 0f;
+    public float CurrentCortisol { get; private set; } = 0f;
+    public float MaxCortisol => _maxCortisol;
+
+    private bool _isGameOver = false;
+
+
+
 
     private void Start()
     {
-        if (cortisolSlider) cortisolSlider.maxValue = maxCortisol;
+        if (_cortisolSlider) _cortisolSlider.maxValue = _maxCortisol;
     }
 
     private void Update()
     {
-        UpdateCortisol(passiveIncreaseRate * Time.deltaTime);
+        UpdateCortisol(_passiveIncreaseRate * Time.deltaTime);
     }
 
     public void UpdateCortisol(float amount)
     {
-        currentCortisol = Mathf.Clamp(currentCortisol + amount, 0, maxCortisol);
+        if (_isGameOver) return;
 
-        if (cortisolSlider) cortisolSlider.value = currentCortisol;
+        CurrentCortisol = Mathf.Clamp(CurrentCortisol + amount, 0, _maxCortisol);
 
-        if (currentCortisol >= maxCortisol)
+        if (_cortisolSlider) _cortisolSlider.value = CurrentCortisol;
+
+        if (CurrentCortisol >= _maxCortisol)
         {
+            _isGameOver = true;
             Debug.LogError("Game Over!");
+            ActionCommands.OnGameOver?.Invoke();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        BaseFile file = other.GetComponent<BaseFile>();
-
-        if (file != null)
-        {
-            if (file.CurLoadSteps == 0)
-            {
-                ActionCommands.OnFileEaten?.Invoke(file);
-
-                if (!(file is BadFile))
-                {
-                    UpdateCortisol(-10f);
-                    Debug.Log($"[Eat] กิน {file.gameObject.name} แล้ว! ลุ้น Core File...");
-                }
-                Destroy(file.gameObject);
-                return;
-            }
-        }
-
         IStatModifier effect = other.GetComponent<IStatModifier>();
         if (effect != null)
         {
             effect.ApplyModifier(this);
         }
+    }
+
+    public void DEBUG_ResetCortisol()
+    {
+        _isGameOver = false;
+        CurrentCortisol = 0f;
+
+        if (_cortisolSlider != null)
+            _cortisolSlider.value = 0f;
+
+        Debug.Log("[ScreenMateStats] DEBUG: Cortisol reset to 0.");
     }
 }

@@ -32,6 +32,22 @@ public class ScreenMateMovement : MonoBehaviour
     private float stateTimer = 0f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
+    //keep
+    private bool _isGameOver = false;
+
+    //keep
+    private void OnEnable()
+    {
+        ActionCommands.OnGameOver += HandleGameOver;
+    }
+
+    //keep
+    private void OnDisable()
+    {
+        ActionCommands.OnGameOver -= HandleGameOver;
+    }
+
+
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -42,6 +58,7 @@ public class ScreenMateMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_isGameOver) return;
         if (currentState == MateState.Dragged) return;
 
         if (rb.linearVelocity.y < -0.1f)
@@ -120,8 +137,18 @@ public class ScreenMateMovement : MonoBehaviour
         _spriteRenderer.flipX = !_spriteRenderer.flipX;
     }
 
+    //keep
+    private void HandleGameOver()
+    {
+        _isGameOver = true;
+        rb.linearVelocity = Vector2.zero;
+        currentState = MateState.Idle;
+        Debug.Log("[ScreenMateMovement] Game Over — Movement stopped.");
+    }
+
     private void OnMouseDown()
     {
+        if (_isGameOver) return;
         currentState = MateState.Dragged;
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;

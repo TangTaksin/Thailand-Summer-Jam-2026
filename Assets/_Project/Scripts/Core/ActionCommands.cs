@@ -9,6 +9,7 @@ public class ActionCommands : MonoBehaviour
     public static Action OnDeleteCommand;
     public static Action OnEmptyBinCommand;
     public static Action OnFormatCommand;
+    public static Action OnGameOver;
 
     public static Action<BaseFile> OnFileEaten;
 
