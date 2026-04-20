@@ -1512,14 +1512,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FileSpawner
   _coreFilePrefab: {fileID: 309410140686626182, guid: 4b626b9ad603f144d8eeff723f97dcc6, type: 3}
-  _regularFilePrefabs:
-  - {fileID: 740322574324614007, guid: 3b202f02576df934fbbf56b7b3b36018, type: 3}
-  - {fileID: 3477755107130411471, guid: cac8150d965fdd341907728f60d54848, type: 3}
-  - {fileID: 646031621814013815, guid: d576bb729680b4b4e8a9d4a0f52c4ba8, type: 3}
-  - {fileID: 6838882762295703781, guid: 5c15047584c151d4eb91a6aac133ec9f, type: 3}
+  _spawnTable: {fileID: 11400000, guid: 20da73eca7a14584ba03153d9f5698eb, type: 2}
   _coreFileDropRate: 10
   _guaranteedPityCount: 10
-  _spawnCount: 5
+  _spawnCount: 2
   _minBounds: {x: -8.46, y: -1.78}
   _maxBounds: {x: 8.46, y: 4.65}
 --- !u!4 &1175373498
