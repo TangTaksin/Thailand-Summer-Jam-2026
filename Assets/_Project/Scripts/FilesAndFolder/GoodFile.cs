@@ -6,7 +6,7 @@ public class GoodFile : BaseFile, IStatModifier
     public float healAmount = 15f;
     public void ApplyModifier(ScreenMateStats stats)
     {
-        if (curloadSteps == 0)
+        if (CurLoadSteps == 0)
         {
             stats.UpdateCortisol(-healAmount);
             Destroy(gameObject);

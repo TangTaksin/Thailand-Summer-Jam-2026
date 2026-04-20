@@ -7,18 +7,21 @@ public class BinFolder : BaseFolder
 
     protected override bool CanAcceptFile(BaseFile file)
     {
-        if (file == null || string.IsNullOrEmpty(file.loadedFileName)) return false;
+        if (file == null || string.IsNullOrEmpty(file.LoadedFileName)) return false;
 
-        return _junkExtensions.Any(ext => file.loadedFileName.EndsWith(ext));
+        return _junkExtensions.Any(ext => file.LoadedFileName.EndsWith(ext));
     }
 
     protected override void ProcessFile(BaseFile file)
     {
-        JunkFile junk = file as JunkFile;
-        if (junk != null)
+        if (file is JunkFile junk)
         {
-            Debug.Log($"[BinFolder] Received: {file.gameObject.name}");
-            Destroy(file.gameObject);
+            Debug.Log($"[BinFolder] Received junk file: {junk.gameObject.name}");
+            Destroy(junk.gameObject);
+        }
+        else
+        {
+            Debug.LogWarning($"[BinFolder] Rejected non-junk file: {file.gameObject.name}");
         }
     }
 }

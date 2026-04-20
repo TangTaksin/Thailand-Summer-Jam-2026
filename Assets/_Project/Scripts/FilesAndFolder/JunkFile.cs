@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 using System.IO;
 
 public class JunkFile : BaseFile
@@ -9,9 +8,9 @@ public class JunkFile : BaseFile
 
     protected override void LoadFile()
     {
-        if (curloadSteps == 0)
+        if (CurLoadSteps == 0)
         {
-            if (fileNameTextMeshPro != null) fileNameTextMeshPro.text = loadedFileName;
+            if (fileNameTextMeshPro != null) fileNameTextMeshPro.text = _loadedFileName;
             if (badFilePrefab != null)
             {
                 GameObject virus = Instantiate(badFilePrefab, transform.position, transform.rotation);
@@ -31,10 +30,10 @@ public class JunkFile : BaseFile
         string ext = junkExtensions[Random.Range(0, junkExtensions.Length)];
         brokenFileName = hexCode + ext;
 
-        if (!string.IsNullOrEmpty(loadedFileName))
+        if (!string.IsNullOrEmpty(_loadedFileName))
         {
-            string cleanName = Path.GetFileNameWithoutExtension(loadedFileName);
-            loadedFileName = cleanName + ext;
+            string cleanName = Path.GetFileNameWithoutExtension(_loadedFileName);
+            _loadedFileName = cleanName + ext;
         }
     }
 }

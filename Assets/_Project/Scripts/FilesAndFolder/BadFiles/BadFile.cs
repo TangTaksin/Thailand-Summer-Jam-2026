@@ -19,13 +19,12 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     protected override void Start()
     {
         base.Start();
-        InitializeHp();
         FindScreenMateTarget();
     }
 
     private void Update()
     {
-        bool canMove = curloadSteps == 0 && !_isStunned && _targetScreenMate != null;
+        bool canMove = CurLoadSteps == 0 && !_isStunned && _targetScreenMate != null;
 
         if (canMove)
         {
@@ -52,28 +51,43 @@ public class BadFile : BaseFile, IStatModifier, IMovable
         }
     }
 
-    protected override void ReduceloadSteps()
+    public override void Refresh()
     {
-        if (curloadSteps > 0)
+        if (CurLoadSteps > 0)
         {
             HandleLoadStepReduction();
         }
         else
         {
+
             HandleCombatPhase();
         }
 
         LoadFile();
     }
 
+    public override bool CanDelete(out string reason)
+    {
+        if (CurrentHp > 0)
+        {
+            reason = "ไม่สามารถลบไวรัสได้! ต้องทำให้มัน Stun ก่อน";
+            return false;
+        }
+
+        reason = "";
+        return true;
+    }
+
     private void HandleLoadStepReduction()
     {
-        curloadSteps--;
+        CurLoadSteps--;
 
-        bool finishedLoading = curloadSteps == 0;
+        bool finishedLoading = CurLoadSteps <= 0;
 
         if (finishedLoading)
         {
+            CurLoadSteps = 0;
+            InitializeHp();
             _isStunned = false;
             Debug.Log($"[BadFile] {gameObject.name} โหลดเสร็จแล้ว — พร้อมเคลื่อนที่");
         }
@@ -120,7 +134,7 @@ public class BadFile : BaseFile, IStatModifier, IMovable
 
     private void UpdateSpriteAndFileName()
     {
-        bool isLoadingOrStunned = curloadSteps > 0 || _isStunned;
+        bool isLoadingOrStunned = CurLoadSteps > 0 || _isStunned;
 
         if (isLoadingOrStunned)
         {
@@ -142,7 +156,7 @@ public class BadFile : BaseFile, IStatModifier, IMovable
 
             if (fileNameTextMeshPro != null)
             {
-                fileNameTextMeshPro.text = loadedFileName;
+                fileNameTextMeshPro.text = _loadedFileName;
             }
         }
     }
@@ -154,9 +168,9 @@ public class BadFile : BaseFile, IStatModifier, IMovable
             return;
         }
 
-        if (curloadSteps > 0)
+        if (CurLoadSteps > 0)
         {
-            curloadStepsTextMeshProUI.text = $"{curloadSteps}";
+            curloadStepsTextMeshProUI.text = $"{CurLoadSteps}";
         }
         else
         {
@@ -166,7 +180,7 @@ public class BadFile : BaseFile, IStatModifier, IMovable
 
     public void ApplyModifier(ScreenMateStats stats)
     {
-        bool canDealDamage = curloadSteps == 0 && !_isStunned;
+        bool canDealDamage = CurLoadSteps == 0 && !_isStunned;
 
         if (!canDealDamage)
         {

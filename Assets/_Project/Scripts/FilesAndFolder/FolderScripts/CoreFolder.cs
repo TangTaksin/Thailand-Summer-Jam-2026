@@ -19,7 +19,7 @@ public class CoreFolder : BaseFolder
     protected override void ProcessFile(BaseFile file)
     {
         CoreFile core = file as CoreFile;
-        if (core != null && core.curloadSteps == 0)
+        if (core != null && core.CurLoadSteps == 0)
         {
             _targetCount--;
             

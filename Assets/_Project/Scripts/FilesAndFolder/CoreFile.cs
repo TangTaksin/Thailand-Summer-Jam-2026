@@ -18,10 +18,10 @@ public class CoreFile : BaseFile
         
         brokenFileName = hexCode + ext;
 
-        if (!string.IsNullOrEmpty(loadedFileName))
+        if (!string.IsNullOrEmpty(_loadedFileName))
         {
-            string cleanName = Path.GetFileNameWithoutExtension(loadedFileName);
-            loadedFileName = cleanName + ext;
+            string cleanName = Path.GetFileNameWithoutExtension(_loadedFileName);
+            _loadedFileName = cleanName + ext;
         }
     }
 }
