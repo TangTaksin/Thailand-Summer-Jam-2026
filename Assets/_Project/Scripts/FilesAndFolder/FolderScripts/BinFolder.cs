@@ -15,7 +15,7 @@ public class BinFolder : BaseFolder
     protected override void ProcessFile(BaseFile file)
     {
         JunkFile junk = file as JunkFile;
-        if (junk != null && junk.curloadSteps == 0)
+        if (junk != null)
         {
             Debug.Log($"[BinFolder] Received: {file.gameObject.name}");
             Destroy(file.gameObject);

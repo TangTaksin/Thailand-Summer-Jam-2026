@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 public class ContextMenu : MonoBehaviour
 {
     [Header("UI Reference")]
-    [Tooltip("ลาก UI Panel ของเมนูคลิกขวามาใส่ช่องนี้")]
     public GameObject contextMenuPanel;
     private BaseFile hoveredFile;
 
@@ -78,6 +77,14 @@ public class ContextMenu : MonoBehaviour
     {
         if (hoveredFile != null)
         {
+            if (hoveredFile is JunkFile)
+            {
+                Debug.Log("ไม่สามารถลบไฟล์ขยะได้!");
+                CloseMenu();
+                return;
+
+            }
+
             if (hoveredFile is BadFile badFile)
             {
                 if (badFile.CurrentHp != 0)

@@ -33,12 +33,12 @@ public class BadFile : BaseFile, IStatModifier, IMovable
         }
     }
 
-    private void InitializeHp()
+    protected void InitializeHp()
     {
         _currentHp = _maxHp;
     }
 
-    private void FindScreenMateTarget()
+    protected void FindScreenMateTarget()
     {
         ScreenMateStats screenMate = FindAnyObjectByType<ScreenMateStats>();
 

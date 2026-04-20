@@ -4,10 +4,10 @@ using UnityEngine;
 public class BaseFile : MonoBehaviour
 {
     [Header("File Status")]
-    [SerializeField] protected int minSteps = 3;
-    [SerializeField] protected int maxSteps = 7;
+    [SerializeField] protected int minLoadSteps = 3;
+    [SerializeField] protected int maxLoadSteps = 7;
 
-    protected int currentMaxSteps;
+    protected int currentMaxLoadSteps;
     public int curloadSteps { get; protected set; }
 
     [Header("File Name")]
@@ -66,8 +66,8 @@ public class BaseFile : MonoBehaviour
 
     private void GenerateRandomLoadSteps()
     {
-        currentMaxSteps = Random.Range(minSteps, maxSteps + 1);
-        curloadSteps = currentMaxSteps;
+        currentMaxLoadSteps = Random.Range(minLoadSteps, maxLoadSteps + 1);
+        curloadSteps = currentMaxLoadSteps;
     }
 
 
