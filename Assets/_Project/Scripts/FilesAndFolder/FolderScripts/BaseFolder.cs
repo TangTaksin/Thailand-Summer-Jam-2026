@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BaseFolder : MonoBehaviour
 {
+    protected virtual bool CanAcceptFile(BaseFile file) { return true; }
 
     public virtual void ReceiveFile(BaseFile droppedFile)
     {
@@ -14,8 +15,6 @@ public class BaseFolder : MonoBehaviour
             RejectFile(droppedFile);
         }
     }
-
-    protected virtual bool CanAcceptFile(BaseFile file) { return true; }
     protected virtual void ProcessFile(BaseFile file) { }
     protected virtual void RejectFile(BaseFile file) { }
 }

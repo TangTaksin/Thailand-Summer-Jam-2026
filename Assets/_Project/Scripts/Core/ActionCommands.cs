@@ -7,6 +7,7 @@ public class ActionCommands : MonoBehaviour
     public static Action OnNewFileCommand;
     public static Action OnRefreshCommand;
     public static Action OnDeleteCommand;
+    public static Action OnEmptyBinCommand;
 
     public static Action<BaseFile> OnFileEaten;
 

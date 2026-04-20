@@ -1,10 +1,19 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ContextMenu : MonoBehaviour
 {
     [Header("UI Reference")]
     public GameObject contextMenuPanel;
+    public GameObject[] defaultMenuOptions;
+    public GameObject emptyBinButton;
+
+    [Header("Settings")]
+    [SerializeField] private int _requiredFiles = 10;
+
+    private BinFolder _targetBin;
     private BaseFile hoveredFile;
 
     private void Start()
@@ -12,6 +21,7 @@ public class ContextMenu : MonoBehaviour
         if (contextMenuPanel != null)
         {
             contextMenuPanel.SetActive(false);
+            emptyBinButton.SetActive(false);
         }
     }
 
@@ -31,27 +41,59 @@ public class ContextMenu : MonoBehaviour
         }
     }
 
+
     private void OpenMenu()
     {
+        if (contextMenuPanel == null) return;
+
+
         RectTransform rect = contextMenuPanel.GetComponent<RectTransform>();
-
         rect.pivot = new Vector2(0f, 1f);
-
         Vector3 mouseOffset = new Vector3(5f, -5f, 0f);
         rect.position = Input.mousePosition + mouseOffset;
-
-        contextMenuPanel.SetActive(true);
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
+        _targetBin = null;
+        hoveredFile = null;
+
         if (hit.collider != null)
         {
             hoveredFile = hit.collider.GetComponent<BaseFile>();
+            _targetBin = hit.collider.GetComponent<BinFolder>();
+        }
+
+        UpdateMenuOptions();
+
+        contextMenuPanel.SetActive(true);
+    }
+
+    private void UpdateMenuOptions()
+    {
+        if (_targetBin != null)
+        {
+            emptyBinButton.SetActive(true);
+            ToggleDefaultOptions(false);
+
+            Button btn = emptyBinButton.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.interactable = _targetBin.StoredFileCount >= _requiredFiles;
+            }
         }
         else
         {
-            hoveredFile = null;
+            emptyBinButton.SetActive(false);
+            ToggleDefaultOptions(true);
+        }
+    }
+
+    private void ToggleDefaultOptions(bool isActive)
+    {
+        foreach (GameObject option in defaultMenuOptions)
+        {
+            if (option != null) option.SetActive(isActive);
         }
     }
 
@@ -88,5 +130,14 @@ public class ContextMenu : MonoBehaviour
             }
         }
         CloseMenu();
+    }
+
+    public void OnClick_EmptyBinCommand()
+    {
+        if (_targetBin != null && _targetBin.StoredFileCount >= _requiredFiles)
+        {
+            ActionCommands.OnEmptyBinCommand?.Invoke();
+            CloseMenu();
+        }
     }
 }

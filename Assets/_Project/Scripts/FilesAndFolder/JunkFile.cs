@@ -6,6 +6,13 @@ public class JunkFile : BaseFile
     [SerializeField] private GameObject badFilePrefab;
     private readonly string[] junkExtensions = { ".junk", ".trash", ".del", ".tmp" };
 
+
+    public override bool CanDelete(out string message)
+    {
+        message = "This file cannot be deleted. It is a junk file.";
+        return false;
+    }
+
     protected override void LoadFile()
     {
         if (CurLoadSteps == 0)
