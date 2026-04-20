@@ -5,7 +5,7 @@ public class ScreenMateStats : MonoBehaviour
 {
     public Slider cortisolSlider;
     public float maxCortisol = 100f;
-    
+
     [Header("Passive Increase Settings")]
     public float passiveIncreaseRate = 2f;
 
@@ -24,10 +24,10 @@ public class ScreenMateStats : MonoBehaviour
     public void UpdateCortisol(float amount)
     {
         currentCortisol = Mathf.Clamp(currentCortisol + amount, 0, maxCortisol);
-        
+
         if (cortisolSlider) cortisolSlider.value = currentCortisol;
 
-        if (currentCortisol >= maxCortisol) 
+        if (currentCortisol >= maxCortisol)
         {
             Debug.LogError("Game Over!");
         }
@@ -35,8 +35,25 @@ public class ScreenMateStats : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        IStatModifier effect = other.GetComponent<IStatModifier>();
+        BaseFile file = other.GetComponent<BaseFile>();
 
+        if (file != null)
+        {
+            if (file.CurLoadSteps == 0)
+            {
+                ActionCommands.OnFileEaten?.Invoke(file);
+
+                if (!(file is BadFile))
+                {
+                    UpdateCortisol(-10f);
+                    Debug.Log($"[Eat] กิน {file.gameObject.name} แล้ว! ลุ้น Core File...");
+                }
+                Destroy(file.gameObject);
+                return;
+            }
+        }
+
+        IStatModifier effect = other.GetComponent<IStatModifier>();
         if (effect != null)
         {
             effect.ApplyModifier(this);

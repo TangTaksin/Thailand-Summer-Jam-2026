@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class FileSpawner : MonoBehaviour
 {
+    [Header("Spawn Settings")]
+    [SerializeField] private int _spawnCount = 1;
+
     [Header("Gacha System Settings")]
     [SerializeField] private GameObject _coreFilePrefab;
     [SerializeField] private FileSpawnTable _spawnTable;
@@ -10,61 +13,71 @@ public class FileSpawner : MonoBehaviour
     [SerializeField] private float _coreFileDropRate = 5f;
     [SerializeField] private int _guaranteedPityCount = 10;
 
-    [Header("Spawn Settings")]
-    [SerializeField] private int _spawnCount = 1;
-
     [Header("Spawn Area")]
     [SerializeField] private Vector2 _minBounds = new Vector2(-7f, -3f);
     [SerializeField] private Vector2 _maxBounds = new Vector2(7f, 4f);
 
     private int _currentPityCounter;
 
-    private void OnEnable() => ActionCommands.OnNewFileCommand += SpawnRandomFile;
-    private void OnDisable() => ActionCommands.OnNewFileCommand -= SpawnRandomFile;
+    private void OnEnable()
+    {
+        ActionCommands.OnNewFileCommand += SpawnRandomFile;
+        ActionCommands.OnFileEaten += HandleCoreFileDrop;
+    }
+
+    private void OnDisable()
+    {
+        ActionCommands.OnNewFileCommand -= SpawnRandomFile;
+        ActionCommands.OnFileEaten -= HandleCoreFileDrop;
+    }
 
     private void SpawnRandomFile()
     {
-        if (_coreFilePrefab == null || _spawnTable == null)
-        {
-            Debug.LogWarning("[FileSpawner] Prefab หรือ SpawnTable ยังไม่ได้ assign");
-            return;
-        }
+        if (_spawnTable == null) return;
 
         for (int i = 0; i < _spawnCount; i++)
         {
-            GameObject prefabToSpawn = ResolvePrefab();
+            GameObject prefabToSpawn = _spawnTable.Pick(); 
             if (prefabToSpawn == null) continue;
 
-            Vector3 spawnPos = new Vector3(
-                Random.Range(_minBounds.x, _maxBounds.x),
-                Random.Range(_minBounds.y, _maxBounds.y),
-                0f
-            );
-
-            Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
+            SpawnAtPosition(prefabToSpawn, GetRandomSpawnPos());
         }
     }
 
-    private GameObject ResolvePrefab()
+    private void HandleCoreFileDrop(BaseFile eatenFile)
     {
+        if (eatenFile is BadFile) return;
+
         _currentPityCounter++;
 
-        if (_currentPityCounter >= _guaranteedPityCount)
-        {
-            ResetPity();
-            Debug.Log("[FileSpawner] 🎉 Pity triggered!");
-            return _coreFilePrefab;
-        }
-
+        bool isPityTriggered = _currentPityCounter >= _guaranteedPityCount;
         float roll = Random.Range(0f, 100f);
-        if (roll <= _coreFileDropRate)
+
+        if (isPityTriggered || roll <= _coreFileDropRate)
         {
             ResetPity();
-            Debug.Log($"[FileSpawner] ✨ Lucky roll ({roll:F1}%)!");
-            return _coreFilePrefab;
+            Debug.Log(isPityTriggered ? "🎉 Pity! Core Dropped." : "✨ Lucky! Core Dropped.");
+            SpawnAtPosition(_coreFilePrefab, eatenFile.transform.position);
         }
+        else
+        {
+            Debug.Log($"[Gacha] Pity Count: {_currentPityCounter}/{_guaranteedPityCount}");
+        }
+    }
 
-        return _spawnTable.Pick();
+    private void SpawnAtPosition(GameObject prefab, Vector3 position)
+    {
+        if (prefab == null) return;
+        Instantiate(prefab, position, Quaternion.identity);
+    }
+
+    private Vector3 GetRandomSpawnPos()
+    {
+        return new Vector3(
+            Random.Range(_minBounds.x, _maxBounds.x),
+            Random.Range(_minBounds.y, _maxBounds.y),
+            0f
+        );
     }
 
     private void ResetPity() => _currentPityCounter = 0;
@@ -72,14 +85,8 @@ public class FileSpawner : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(0f, 1f, 0f, 0.5f);
-        Vector3 center = new Vector3(
-            (_minBounds.x + _maxBounds.x) / 2f,
-            (_minBounds.y + _maxBounds.y) / 2f, 0f
-        );
-        Vector3 size = new Vector3(
-            _maxBounds.x - _minBounds.x,
-            _maxBounds.y - _minBounds.y, 0f
-        );
+        Vector3 center = (Vector3)(_minBounds + _maxBounds) / 2f;
+        Vector3 size = new Vector3(_maxBounds.x - _minBounds.x, _maxBounds.y - _minBounds.y, 0f);
         Gizmos.DrawWireCube(center, size);
     }
 }

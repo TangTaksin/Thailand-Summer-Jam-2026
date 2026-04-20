@@ -1511,12 +1511,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9af42a2f9dfcba34ebccd2c339a6f0bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FileSpawner
+  _spawnCount: 2
   _coreFilePrefab: {fileID: 309410140686626182, guid: 4b626b9ad603f144d8eeff723f97dcc6, type: 3}
   _spawnTable: {fileID: 11400000, guid: 20da73eca7a14584ba03153d9f5698eb, type: 2}
-  _coreFileDropRate: 10
-  _guaranteedPityCount: 10
-  _spawnCount: 2
-  _minBounds: {x: -8.46, y: -1.78}
+  _coreFileDropRate: 5
+  _guaranteedPityCount: 20
+  _minBounds: {x: -7.41, y: -1.78}
   _maxBounds: {x: 8.46, y: 4.65}
 --- !u!4 &1175373498
 Transform:
@@ -1725,8 +1725,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenMateStats
   cortisolSlider: {fileID: 1628993680}
-  maxCortisol: 100
-  passiveIncreaseRate: 2
+  maxCortisol: 111
+  passiveIncreaseRate: 1
 --- !u!1 &1585253425
 GameObject:
   m_ObjectHideFlags: 0
