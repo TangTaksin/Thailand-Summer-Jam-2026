@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GoodFile : ScreenElements, IEffectable
+public class GoodFile_proto : ScreenElements, IEffectable
 {
     public float heal = 15f;
 

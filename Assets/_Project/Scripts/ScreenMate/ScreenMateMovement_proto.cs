@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class ScreenMateMovement : ScreenElements
+public class ScreenMateMovement_proto : ScreenElements
 {
     // สร้างหมวดหมู่สถานะ (State) ของตัวละคร
     public enum MateState

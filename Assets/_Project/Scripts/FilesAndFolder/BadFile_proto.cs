@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BadFile : ScreenElements, IEffectable
+public class BadFile_proto : ScreenElements, IEffectable
 {
     public float damage = 20f;
 
