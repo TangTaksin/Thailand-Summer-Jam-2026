@@ -338,6 +338,9 @@ MonoBehaviour:
   - key: 116
     prefab: {fileID: 7433041041010776109, guid: 8e9653c4be844bc418d54f2658c811f8, type: 3}
     label: 
+  - key: 121
+    prefab: {fileID: 3740270885284919612, guid: 4f75f64cecef4bb41af3d68ce5a94f12, type: 3}
+    label: 
   _spawnAtMouse: 1
   _spawnRangeX: {x: -5, y: 5}
   _spawnRangeY: {x: -3, y: 3}
@@ -2440,6 +2443,7 @@ MonoBehaviour:
   _cortisolSlider: {fileID: 1628993680}
   _maxCortisol: 100
   _passiveIncreaseRate: 2
+  _invincibleTimer: 0
 --- !u!1 &1585253425
 GameObject:
   m_ObjectHideFlags: 0
