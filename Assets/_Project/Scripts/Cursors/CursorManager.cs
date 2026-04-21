@@ -8,7 +8,9 @@ using UnityEngine.InputSystem;
 public class CursorManager : MonoBehaviour
 {
     Camera mainCam;
+    SpriteRenderer spriteRenderer;
     BoxCollider2D col2D;
+    [SerializeField] SelectionBox selBox;
 
     InputAction action_point;
     InputAction action_click;
@@ -23,6 +25,7 @@ public class CursorManager : MonoBehaviour
     void Awake()
     {
         mainCam = Camera.main;
+        spriteRenderer = GetComponent<SpriteRenderer>();
         col2D = GetComponent<BoxCollider2D>();
 
         action_point = InputSystem.actions.FindAction("Point");
@@ -46,6 +49,10 @@ public class CursorManager : MonoBehaviour
         action_rightClick.performed -= RightClick;
     }
 
+
+
+    #region Pointer & Click
+
     void PointerUpdate(InputAction.CallbackContext ctx)
     {
         var mouseScrPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
@@ -53,16 +60,13 @@ public class CursorManager : MonoBehaviour
         
         if (isDragging)
         {
-            foreach (var ele in inSelection)
-            {
-                if (ele)
-                ele.Drag(mouseScrPos, mouseVelo);
-            }
+            if (inSelection[0])
+                inSelection[0].Drag(mouseScrPos, mouseVelo);
         }
 
         if (isGroupSelecting)
         {
-            UpdateBox(mouseClickPos, mouseScrPos);
+            UpdateSelectionBound(mouseClickPos, mouseScrPos);
         }
     }
 
@@ -81,20 +85,22 @@ public class CursorManager : MonoBehaviour
         {
             var scr_ele = found.GetComponent<ScreenElements>();
 
-            print(scr_ele);
-
             // if it find screen element
             // add it to selection and start draging it
             if (scr_ele)
             {
-                AddSelection(scr_ele);
-
-                // store offset to each selected screen element
-                foreach (var ele in inSelection)
+                if (scr_ele is not SelectionBox)
                 {
-                    ele.UpdateOffset(mouseClickPos);
+                    ClearSelection();
                 }
-                
+                    AddSelection(scr_ele);
+
+                    // store offset to each selected screen element
+                    foreach (var ele in inSelection)
+                    {
+                        ele.UpdateOffset(mouseClickPos);
+                    }
+
                 isDragging = true;
                 
             }
@@ -102,6 +108,8 @@ public class CursorManager : MonoBehaviour
         // else start box selection
         else
         {
+            ClearSelection();
+
             print("Start Gruup Select");
             isGroupSelecting = true;
             EnableCollider(mouseClickPos);
@@ -112,8 +120,14 @@ public class CursorManager : MonoBehaviour
     {
         print("release");
         isDragging = false;
-        isGroupSelecting = false;
-        DisableCollider();
+
+        if (isGroupSelecting)
+        {
+            selBox.AddtoBox(inSelection.ToArray());
+            isGroupSelecting = false;
+            DisableCollider();
+            
+        }
     }
 
     void RightClick(InputAction.CallbackContext ctx)
@@ -121,13 +135,24 @@ public class CursorManager : MonoBehaviour
         print("right click");
     }
 
+    #endregion
+
+
+
+    #region Selection Func.
 
     void AddSelection(ScreenElements scr_ele)
     {
+        if (scr_ele is SelectionBox && isGroupSelecting)
+            return;
+
         if (!inSelection.Contains(scr_ele))
         {
             inSelection.Add(scr_ele);
             scr_ele.StateOverride(ScreenElements.ScreenElementState.Freeze);
+        
+            if (isGroupSelecting)
+                selBox.UpdateBoxBound(inSelection.ToArray());
         }
     }
 
@@ -137,19 +162,29 @@ public class CursorManager : MonoBehaviour
         {
             inSelection.Remove(scr_ele);
             scr_ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+
+            if (isGroupSelecting)
+                selBox.UpdateBoxBound(inSelection.ToArray());
         }
     }
 
-    void ClearConditionCheck(ScreenElements scr_ele)
+    void ClearSelection()
     {
-        /// clear if :
-        /// 1. selecting file that are not being selected
-        /// 2. releasing click on blank space
+        foreach(var ele in inSelection)
+        {
+            ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+        }
 
+        selBox.HideBox();
+        inSelection.Clear();
         
     }
 
-    #region GroupSelectBox
+    #endregion
+
+
+
+    #region GroupSelectBound
 
     public void EnableCollider(Vector2 mousePos)
     {
@@ -158,14 +193,15 @@ public class CursorManager : MonoBehaviour
 
     public void DisableCollider()
     {
-        col2D.size = Vector2.zero;
+        UpdateSelectionBound(Vector2.zero,Vector2.zero);
     }
 
-    public void UpdateBox(Vector2 startPoint, Vector2 endPoint)
+    public void UpdateSelectionBound(Vector2 startPoint, Vector2 endPoint)
     {
         var center = (startPoint + endPoint) / 2;
         transform.position = center;
         col2D.size = new Vector2(Mathf.Abs(endPoint.x - startPoint.x), Mathf.Abs(startPoint.y - endPoint.y));
+        spriteRenderer.size = col2D.size;
     }
 
     
@@ -183,7 +219,7 @@ public class CursorManager : MonoBehaviour
     {
         collision.TryGetComponent<ScreenElements>(out var scr_ele);
 
-        if(scr_ele && isGroupSelecting)
+        if(scr_ele)
         {
             RemoveSelection(scr_ele);
         }

@@ -26,14 +26,16 @@ public class ScreenMateMovement : ScreenElements
     public float maxIdleTime = 3f;
 
     private int movingDirection = 1;
-    private Rigidbody2D rb;
+
+
     private Vector3 offset;
     private float stateTimer = 0f;
 
-    private void Start()
+    protected override void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        rb.freezeRotation = true; 
+       base.Start();
+
+        rb2D.freezeRotation = true; 
         SetWalkState();
     }
 
@@ -41,11 +43,11 @@ public class ScreenMateMovement : ScreenElements
     {
         if (element_state != ScreenElementState.Normal) return;
 
-        if (rb.linearVelocity.y < -0.1f)
+        if (rb2D.linearVelocity.y < -0.1f)
         {
             currentState = MateState.Falling;
         }
-        else if (currentState == MateState.Falling && Mathf.Abs(rb.linearVelocity.y) <= 0.05f)
+        else if (currentState == MateState.Falling && Mathf.Abs(rb2D.linearVelocity.y) <= 0.05f)
         {
             SetWalkState();
         }
@@ -59,11 +61,11 @@ public class ScreenMateMovement : ScreenElements
 
             case MateState.Idle:
                 HandleStateTimer();
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
                 break;
 
             case MateState.Falling:
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
                 break;
         }
     }
@@ -98,7 +100,7 @@ public class ScreenMateMovement : ScreenElements
 
     private void Patrol()
     {
-        rb.linearVelocity = new Vector2(movingDirection * moveSpeed, rb.linearVelocity.y);
+        rb2D.linearVelocity = new Vector2(movingDirection * moveSpeed, rb2D.linearVelocity.y);
 
         if (transform.position.x >= rightBound && movingDirection == 1)
         {
