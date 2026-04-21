@@ -1,10 +1,9 @@
 using UnityEngine;
 
-public class GoodFile_proto : ScreenElements, IEffectable
+public class GoodFile_proto : ScreenElements, IStatModifier
 {
     public float heal = 15f;
-
-    public void ApplyEffect(ScreenMateStats stats)
+    public void ApplyModifier(ScreenMateStats stats)
     {
         stats.UpdateCortisol(-heal);
         Destroy(gameObject);

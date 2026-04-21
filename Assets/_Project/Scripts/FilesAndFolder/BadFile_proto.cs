@@ -1,10 +1,9 @@
 using UnityEngine;
 
-public class BadFile_proto : ScreenElements, IEffectable
+public class BadFile_proto : ScreenElements, IStatModifier
 {
     public float damage = 20f;
-
-    public void ApplyEffect(ScreenMateStats stats)
+    public void ApplyModifier(ScreenMateStats stats)
     {
         stats.UpdateCortisol(damage);
         Destroy(gameObject);
