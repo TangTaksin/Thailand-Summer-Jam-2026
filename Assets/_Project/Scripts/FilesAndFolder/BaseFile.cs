@@ -126,13 +126,13 @@ public class BaseFile : MonoBehaviour, IRefreshable, IDeletable
         }
     }
 
-    private void OnMouseDown()
+    protected virtual void OnMouseDown()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         _dragOffset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
     }
 
-    private void OnMouseDrag()
+    protected virtual void OnMouseDrag()
     {
         Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
         transform.position = new Vector3(

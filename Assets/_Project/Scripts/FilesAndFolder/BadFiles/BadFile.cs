@@ -14,7 +14,7 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     [Header("Movement Settings")]
     [field: SerializeField] public float MoveSpeed { get; set; } = 2f;
 
-    private Transform _targetScreenMate;
+    protected Transform _targetScreenMate;
 
     protected override void Start()
     {
