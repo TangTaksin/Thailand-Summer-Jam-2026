@@ -11,9 +11,6 @@ public class ContextMenu : MonoBehaviour
     public GameObject emptyBinButton;
     public GameObject formatButton;
 
-    [Header("Settings")]
-    [SerializeField] private int _requiredFiles = 10;
-
     private BinFolder _targetBin;
     private CoreFolder _targetCoreFolder;
     private BaseFile hoveredFile;
@@ -84,7 +81,10 @@ public class ContextMenu : MonoBehaviour
             ToggleDefaultOptions(false);
 
             Button btn = emptyBinButton.GetComponent<Button>();
-            if (btn != null) btn.interactable = _targetBin.StoredFileCount >= 10;
+            if (btn != null)
+            {
+                btn.interactable = _targetBin.CanEmpty;
+            }
         }
         else if (_targetCoreFolder != null)
         {
@@ -148,7 +148,7 @@ public class ContextMenu : MonoBehaviour
 
     public void OnClick_EmptyBinCommand()
     {
-        if (_targetBin != null && _targetBin.StoredFileCount >= _requiredFiles)
+        if (_targetBin != null && _targetBin.CanEmpty)
         {
             ActionCommands.OnEmptyBinCommand?.Invoke();
             CloseMenu();

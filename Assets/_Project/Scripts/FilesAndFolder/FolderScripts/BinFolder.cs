@@ -4,27 +4,39 @@ using System.Collections.Generic;
 
 public class BinFolder : BaseFolder
 {
-    private readonly string[] _junkExtensions = { ".junk", ".trash", ".del", ".tmp" };
+    [Header("Settings")]
+    [SerializeField] private int _requiredFiles = 10;
 
+    private readonly string[] _junkExtensions = { ".junk", ".trash", ".del", ".tmp" };
 
     [SerializeField] private List<GameObject> _storedFiles = new List<GameObject>();
     public int StoredFileCount => _storedFiles.Count;
+    public bool CanEmpty => _storedFiles.Count >= _requiredFiles;
 
     void OnEnable()
     {
         ActionCommands.OnEmptyBinCommand += EmptyBin;
-
     }
 
     private void OnDisable()
     {
         ActionCommands.OnEmptyBinCommand -= EmptyBin;
-
     }
 
     private void EmptyBin()
     {
+        foreach (GameObject fileObj in _storedFiles)
+        {
+            if (fileObj != null)
+            {
+                Destroy(fileObj);
+            }
+        }
+        _storedFiles.Clear();
+        Debug.Log("[BinFolder] Bin emptied.");
+
         BaseFile[] allFiles = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude);
+
         foreach (BaseFile file in allFiles)
         {
             Destroy(file.gameObject);
@@ -42,13 +54,9 @@ public class BinFolder : BaseFolder
     {
         if (file is JunkFile junk)
         {
-            Debug.Log($"[BinFolder] Received junk file: {junk.gameObject.name}");
             _storedFiles.Add(junk.gameObject);
-            Destroy(junk.gameObject);
-        }
-        else
-        {
-            Debug.LogWarning($"[BinFolder] Rejected non-junk file: {file.gameObject.name}");
+            junk.transform.SetParent(this.transform);
+            junk.gameObject.SetActive(false);
         }
     }
 }
