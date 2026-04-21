@@ -146,7 +146,7 @@ public class ContextMenu : MonoBehaviour
         CloseMenu();
     }
 
-    public void OnClick_EmptyBinCommand()
+    public void Execute_EmptyBinCommand()
     {
         if (_targetBin != null && _targetBin.CanEmpty)
         {
@@ -155,7 +155,7 @@ public class ContextMenu : MonoBehaviour
         }
     }
 
-    public void OnClick_FormatCommand()
+    public void Execute_FormatCommand()
     {
         ActionCommands.OnFormatCommand?.Invoke();
         CloseMenu();
