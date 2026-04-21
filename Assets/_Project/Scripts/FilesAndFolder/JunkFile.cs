@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.IO;
+using System.Collections;
+using DG.Tweening;
 
 public class JunkFile : BaseFile
 {
@@ -10,6 +12,7 @@ public class JunkFile : BaseFile
     public override bool CanDelete(out string message)
     {
         message = "This file cannot be deleted. It is a junk file.";
+        BounceFileAway();
         return false;
     }
 
@@ -50,4 +53,11 @@ public class JunkFile : BaseFile
         Debug.Log($"[JunkFile] Virus spawned from {gameObject.name}.");
         Destroy(gameObject);
     }
+
+    private void BounceFileAway()
+    {
+        transform.DOShakePosition(0.1f, 0.2f, 10, 90, false, false, ShakeRandomnessMode.Full)
+                 .SetEase(Ease.Linear);
+    }
+
 }
