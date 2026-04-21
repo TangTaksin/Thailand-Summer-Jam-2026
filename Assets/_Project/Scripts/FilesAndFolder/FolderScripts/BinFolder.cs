@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections;
+using DG.Tweening; // 💡 อย่าลืมเพิ่มตัวนี้!
 
 public class BinFolder : BaseFolder
 {
@@ -11,42 +11,38 @@ public class BinFolder : BaseFolder
     [Header("Feedback Settings")]
     [SerializeField] private float _bounceDistanceX = 2.5f;
     [SerializeField] private float _bounceHeight = 1.5f;
-    [SerializeField] private float _bounceDuration = 0.3f;
+    [SerializeField] private float _bounceDuration = 0.5f;
+
+    [Header("Scatter Ranges")]
+    [SerializeField] private Vector2 _scatterX = new Vector2(1, 5);
+    [SerializeField] private Vector2 _scatterY = new Vector2(-2, 2);
 
     private readonly string[] _junkExtensions = { ".junk", ".trash", ".del", ".tmp" };
 
-    [SerializeField] private List<GameObject> _storedFiles = new List<GameObject>();
+    [SerializeField] private readonly List<GameObject> _storedFiles = new List<GameObject>();
     public int StoredFileCount => _storedFiles.Count;
     public bool CanEmpty => _storedFiles.Count >= _requiredFiles;
+    private bool _isFullAnimationPlaying = false;
 
-    void OnEnable()
-    {
-        ActionCommands.OnEmptyBinCommand += EmptyBin;
-    }
-
-    private void OnDisable()
-    {
-        ActionCommands.OnEmptyBinCommand -= EmptyBin;
-    }
+    void OnEnable() { ActionCommands.OnEmptyBinCommand += EmptyBin; }
+    void OnDisable() { ActionCommands.OnEmptyBinCommand -= EmptyBin; }
 
     private void EmptyBin()
     {
+        transform.DOKill();
+        transform.DOPunchPosition(Vector3.down * 0.5f, 0.4f, 10, 1);
+
         foreach (GameObject fileObj in _storedFiles)
         {
-            if (fileObj != null)
-            {
-                Destroy(fileObj);
-            }
+            if (fileObj != null) Destroy(fileObj);
         }
         _storedFiles.Clear();
-        Debug.Log("[BinFolder] Bin emptied.");
+
+        transform.DOScale(1.0f, 0.3f).SetEase(Ease.OutBack);
+        transform.DORotate(Vector3.zero, 0.3f);
 
         BaseFile[] allFiles = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude);
-
-        foreach (BaseFile file in allFiles)
-        {
-            Destroy(file.gameObject);
-        }
+        foreach (BaseFile file in allFiles) Destroy(file.gameObject);
     }
 
     public override void ReceiveFile(BaseFile droppedFile)
@@ -57,18 +53,20 @@ public class BinFolder : BaseFolder
         }
         else
         {
-            Debug.Log("[BinFolder] File rejected: " + droppedFile.LoadedFileName);
-            StartCoroutine(BounceFiles(droppedFile));
+            BounceFileWithTween(droppedFile);
         }
-
     }
-
 
     protected override bool CanAcceptFile(BaseFile file)
     {
         if (file == null || string.IsNullOrEmpty(file.LoadedFileName)) return false;
 
-        return _junkExtensions.Any(ext => file.LoadedFileName.EndsWith(ext));
+        foreach (string ext in _junkExtensions)
+        {
+            if (file.LoadedFileName.EndsWith(ext, System.StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
     }
 
     protected override void ProcessFile(BaseFile file)
@@ -78,42 +76,33 @@ public class BinFolder : BaseFolder
             _storedFiles.Add(junk.gameObject);
             junk.transform.SetParent(this.transform);
             junk.gameObject.SetActive(false);
+            transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.2f, 10, 1);
         }
+
+        if (_storedFiles.Count >= _requiredFiles && !_isFullAnimationPlaying)
+        {
+            _isFullAnimationPlaying = true;
+            Debug.Log("Bin is full!");
+            transform.DOKill();
+            transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
+            transform.DOShakeRotation(0.5f, new Vector3(0, 0, 5f), 15, 90, false)
+                     .SetLoops(-1, LoopType.Restart);
+        }
+
     }
 
-    private IEnumerator BounceFiles(BaseFile file)
+    private void BounceFileWithTween(BaseFile file)
     {
-        Vector3 startPos = file.transform.position;
+        if (file == null) return;
 
-        float randomOffsetX = Random.Range(1, 12);
-        float randomOffsetY = Random.Range(-2, 3);
+        file.transform.DOKill();
 
-        Vector3 endPos = startPos + new Vector3(_bounceDistanceX + randomOffsetX, -0.5f + randomOffsetY, 0f);
+        float randomOffsetX = Random.Range(_scatterX.x, _scatterX.y);
+        float randomOffsetY = Random.Range(_scatterY.x, _scatterY.y);
+        Vector3 endPos = transform.position + new Vector3(_bounceDistanceX + randomOffsetX, randomOffsetY, 0f);
 
-        float timeElapsed = 0f;
+        file.transform.DOJump(endPos, _bounceHeight, 1, _bounceDuration)
+            .SetEase(Ease.OutQuad);
 
-        while (timeElapsed < _bounceDuration)
-        {
-            timeElapsed += Time.deltaTime;
-
-            float t = timeElapsed / _bounceDuration;
-
-            float currentBounceHeight = _bounceHeight * Mathf.Sin(t * Mathf.PI);
-            float heightModifier = Mathf.Sin(t * Mathf.PI) * currentBounceHeight;
-            Vector3 currentPos = Vector3.Lerp(startPos, endPos, t);
-            currentPos.y += heightModifier;
-
-            if (file != null)
-            {
-                file.transform.position = currentPos;
-            }
-
-            yield return null;
-        }
-
-        if (file != null)
-        {
-            file.transform.position = endPos;
-        }
     }
 }
