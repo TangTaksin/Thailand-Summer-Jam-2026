@@ -49,7 +49,7 @@ public class ScreenMateStats : MonoBehaviour
             {
                 spriteRenderer.color = Color.white;
             }
-            
+
         }
     }
 
@@ -81,10 +81,29 @@ public class ScreenMateStats : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+
+        BaseFile file = other.GetComponent<BaseFile>();
+
+        if (file != null)
+        {
+            if (file.CurLoadSteps == 0)
+            {
+                ActionCommands.OnFileEaten?.Invoke(file);
+
+                if (!(file is BadFile))
+                {
+                    UpdateCortisol(-10f);
+                    Debug.Log($"[Eat] กิน {file.gameObject.name} แล้ว! ลุ้น Core File...");
+                }
+                Destroy(file.gameObject);
+                return;
+            }
+        }
+        
         IStatModifier effect = other.GetComponent<IStatModifier>();
         if (effect != null)
         {
-            effect.ApplyModifier(this);            
+            effect.ApplyModifier(this);
         }
     }
 

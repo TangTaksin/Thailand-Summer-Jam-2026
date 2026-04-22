@@ -99,7 +99,6 @@ public class DebugSpawner : MonoBehaviour
         Vector3 spawnPos = _spawnAtMouse ? GetMouseWorldPosition() : GetRandomPosition();
 
         Instantiate(entry.prefab, spawnPos, Quaternion.identity);
-        Debug.Log($"[DebugSpawner] Spawned: {entry.label} at {spawnPos}");
     }
 
     /// <summary>
