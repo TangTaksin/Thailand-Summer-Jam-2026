@@ -2391,7 +2391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9af42a2f9dfcba34ebccd2c339a6f0bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FileSpawner
-  _spawnCount: 5
+  _spawnCount: 10
   _coreFilePrefab: {fileID: 309410140686626182, guid: 4b626b9ad603f144d8eeff723f97dcc6, type: 3}
   _spawnTable: {fileID: 11400000, guid: 20da73eca7a14584ba03153d9f5698eb, type: 2}
   _coreFileDropRate: 5
@@ -2525,6 +2525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e0086149b639943a9d5cab7c162399, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectionBox
+  insideTheBox: []
 --- !u!50 &1507516023
 Rigidbody2D:
   serializedVersion: 5
@@ -4600,7 +4601,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4995705158316124184, guid: 88753411ad661df4aa687846191e0145, type: 3}
       propertyPath: _targetCount
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5463310484341878910, guid: 88753411ad661df4aa687846191e0145, type: 3}
       propertyPath: m_LocalPosition.x

@@ -28,18 +28,24 @@ public class ProjectileFile : BadFile
 
     private void Update()
     {
-        bool canAction = 
-        CurLoadSteps == 0 && 
-        CurrentHp > 0 && 
-        _targetScreenMate != null && 
-        !_isTweening && 
+        bool canAction =
+        CurLoadSteps == 0 &&
+        CurrentHp > 0 &&
+        _targetScreenMate != null &&
+        !_isTweening &&
         element_state == ScreenElementState.Normal;
+
 
         if (canAction)
         {
-            HandleShooting();
             HandleMovement();
         }
+
+        if (CurLoadSteps == 0 && CurrentHp > 0)
+        {
+            HandleShooting();
+        }
+
     }
 
     private void HandleShooting()
@@ -86,7 +92,8 @@ public class ProjectileFile : BadFile
 
         transform.DOJump(targetPos, height, 1, duration)
             .SetEase(Ease.OutQuad)
-            .OnComplete(() => {
+            .OnComplete(() =>
+            {
                 _startPos = transform.position;
                 _sineTimer = 0f;
                 _isTweening = false;
