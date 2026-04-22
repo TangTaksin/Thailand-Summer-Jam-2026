@@ -143,6 +143,7 @@ public class ContextMenu : MonoBehaviour
                 Debug.Log(message);
             }
         }
+        ActionCommands.OnDeleteCommand?.Invoke();
         CloseMenu();
     }
 

@@ -3,6 +3,7 @@ using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class SelectionBox : ScreenElements
 {
@@ -19,6 +20,16 @@ public class SelectionBox : ScreenElements
         HideBox();
     }
 
+    void OnEnable()
+    {
+        ActionCommands.OnDeleteCommand += DeleteFilesInBox;
+    }
+
+    void OnDisable()
+    {
+        ActionCommands.OnDeleteCommand -= DeleteFilesInBox;
+    }
+
     public void HideBox()
     {
         FlushBox();
@@ -27,13 +38,13 @@ public class SelectionBox : ScreenElements
     }
 
     public void UpdateBoxBound(ScreenElements[] inSelection)
-    {   
+    {
         var top = -Mathf.Infinity;
         var bottom = Mathf.Infinity;
         var right = -Mathf.Infinity;
-        var left = Mathf.Infinity; 
+        var left = Mathf.Infinity;
 
-        foreach(var ele in inSelection)
+        foreach (var ele in inSelection)
         {
             var currentBound = ele.GetCollider().bounds;
 
@@ -49,8 +60,8 @@ public class SelectionBox : ScreenElements
             var size_x = Mathf.Abs(right - left);
             var size_y = Mathf.Abs(top - bottom);
 
-            var coord_x = (right + left)/2;
-            var coord_y = (top + bottom)/2;
+            var coord_x = (right + left) / 2;
+            var coord_y = (top + bottom) / 2;
             var center = new Vector2(coord_x, coord_y);
 
             transform.position = center;
@@ -64,7 +75,7 @@ public class SelectionBox : ScreenElements
     public void AddtoBox(ScreenElements[] inSelection)
     {
         insideTheBox = inSelection;
-        
+
         foreach (var ele in inSelection)
         {
             ele.transform.SetParent(this.transform);
@@ -74,5 +85,55 @@ public class SelectionBox : ScreenElements
     public void FlushBox()
     {
         transform.DetachChildren();
+    }
+
+    private void DeleteFilesInBox()
+    {
+        // ถ้าไม่มีของในกล่อง ให้ข้ามไปเลย
+        if (insideTheBox == null || insideTheBox.Length == 0) return;
+
+        List<ScreenElements> remainingElements = new List<ScreenElements>();
+
+        foreach (var ele in insideTheBox)
+        {
+            if (ele == null) continue;
+
+            // เช็คว่าเป็น BaseFile ไหม จะได้เรียกฟังก์ชัน CanDelete ได้
+            if (ele is BaseFile file)
+            {
+                string msg;
+                if (file.CanDelete(out msg))
+                {
+                    // ลบได้ -> ตัดความสัมพันธ์และทำลายทิ้ง
+                    file.transform.SetParent(null);
+                    Destroy(file.gameObject);
+                }
+                else
+                {
+                    // ลบไม่ได้ (เช่น JunkFile) -> เก็บไว้เหมือนเดิม
+                    remainingElements.Add(ele);
+                }
+            }
+            else
+            {
+                // ถ้าไม่ใช่ BaseFile ลบทิ้งได้เลย
+                ele.transform.SetParent(null);
+                Destroy(ele.gameObject);
+            }
+        }
+
+        // อัปเดตรายชื่อไฟล์ที่เหลืออยู่ในกล่อง
+        insideTheBox = remainingElements.ToArray();
+
+        // ถ้าลบหมดเกลี้ยง ก็ซ่อนกล่องทิ้งไป
+        if (insideTheBox.Length == 0)
+        {
+            HideBox();
+        }
+        else
+        {
+            // ถ้ามีไฟล์ลบไม่ได้เหลืออยู่ ให้วาดขอบกล่องใหม่ให้พอดีตัว
+            UpdateBoxBound(insideTheBox);
+        }
     }
 }

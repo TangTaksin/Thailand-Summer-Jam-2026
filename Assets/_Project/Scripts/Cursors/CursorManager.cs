@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+
 
 public class CursorManager : MonoBehaviour
 {
@@ -57,7 +59,7 @@ public class CursorManager : MonoBehaviour
     {
         var mouseScrPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
         var mouseVelo = Input.mousePositionDelta * Time.deltaTime;
-        
+
         if (isDragging)
         {
             if (inSelection[0])
@@ -73,6 +75,7 @@ public class CursorManager : MonoBehaviour
     void Click(InputAction.CallbackContext ctx)
     {
         // clear selections
+        if (IsPointerOverUI()) return;
 
         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var found = Physics2D.OverlapCircle(mousePos, .1f);
@@ -93,13 +96,13 @@ public class CursorManager : MonoBehaviour
                 {
                     ClearSelection();
                 }
-                    AddSelection(scr_ele);
+                AddSelection(scr_ele);
 
-                    // store offset to each selected screen element
-                    foreach (var ele in inSelection)
-                    {
-                        ele.UpdateOffset(mouseClickPos);
-                    }
+                // store offset to each selected screen element
+                foreach (var ele in inSelection)
+                {
+                    ele.UpdateOffset(mouseClickPos);
+                }
 
                 isDragging = true;
             }
@@ -158,7 +161,7 @@ public class CursorManager : MonoBehaviour
         {
             inSelection.Add(scr_ele);
             scr_ele.StateOverride(ScreenElements.ScreenElementState.Freeze);
-        
+
             if (isGroupSelecting)
                 selBox.UpdateBoxBound(inSelection.ToArray());
         }
@@ -178,14 +181,14 @@ public class CursorManager : MonoBehaviour
 
     void ClearSelection()
     {
-        foreach(var ele in inSelection)
+        foreach (var ele in inSelection)
         {
             ele.StateOverride(ScreenElements.ScreenElementState.Normal);
         }
 
         selBox.HideBox();
         inSelection.Clear();
-        
+
     }
 
     #endregion
@@ -201,7 +204,7 @@ public class CursorManager : MonoBehaviour
 
     public void DisableCollider()
     {
-        UpdateSelectionBound(Vector2.zero,Vector2.zero);
+        UpdateSelectionBound(Vector2.zero, Vector2.zero);
     }
 
     public void UpdateSelectionBound(Vector2 startPoint, Vector2 endPoint)
@@ -212,7 +215,18 @@ public class CursorManager : MonoBehaviour
         spriteRenderer.size = col2D.size;
     }
 
-    
+    // 💡 ฟังก์ชันใหม่: ให้มันยิง Raycast เช็ค UI หน้าจอโดยตรง
+    private bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null) return false;
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition; // ใช้ตำแหน่งเมาส์ปัจจุบัน
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        return results.Count > 0; // ถ้าเจอ UI มากกว่า 0 ชิ้น แปลว่าเมาส์ทับ UI อยู่!
+    }
+
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         collision.TryGetComponent<ScreenElements>(out var scr_ele);
@@ -227,7 +241,7 @@ public class CursorManager : MonoBehaviour
     {
         collision.TryGetComponent<ScreenElements>(out var scr_ele);
 
-        if(scr_ele)
+        if (scr_ele)
         {
             RemoveSelection(scr_ele);
         }
