@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
-using DG.Tweening; // 💡 อย่าลืมเพิ่มตัวนี้!
+using DG.Tweening;
 
 public class BinFolder : BaseFolder
 {
@@ -17,6 +17,12 @@ public class BinFolder : BaseFolder
     [SerializeField] private Vector2 _scatterX = new Vector2(1, 5);
     [SerializeField] private Vector2 _scatterY = new Vector2(-2, 2);
 
+    [Header("Refresh Overflow Settings")]
+    [SerializeField] private GameObject _badFilePrefab;
+    [SerializeField] private int _refreshesBeforeOverflow = 5; //Refresh กี่ครั้ง
+    [SerializeField] private int _overflowSpawnCount = 3; //ออกมากี่ตัว
+    private int _currentRefreshCount = 0;
+
     private readonly string[] _junkExtensions = { ".junk", ".trash", ".del", ".tmp" };
 
     [SerializeField] private readonly List<GameObject> _storedFiles = new List<GameObject>();
@@ -24,8 +30,17 @@ public class BinFolder : BaseFolder
     public bool CanEmpty => _storedFiles.Count >= _requiredFiles;
     private bool _isFullAnimationPlaying = false;
 
-    void OnEnable() { ActionCommands.OnEmptyBinCommand += EmptyBin; }
-    void OnDisable() { ActionCommands.OnEmptyBinCommand -= EmptyBin; }
+    void OnEnable()
+    {
+        ActionCommands.OnEmptyBinCommand += EmptyBin;
+        ActionCommands.OnRefreshCommand += HandleRefreshTracking;
+    }
+
+    void OnDisable()
+    {
+        ActionCommands.OnEmptyBinCommand -= EmptyBin;
+        ActionCommands.OnRefreshCommand -= HandleRefreshTracking;
+    }
 
     private void EmptyBin()
     {
@@ -87,6 +102,47 @@ public class BinFolder : BaseFolder
             transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
             transform.DOShakeRotation(0.5f, new Vector3(0, 0, 5f), 15, 90, false)
                      .SetLoops(-1, LoopType.Restart);
+        }
+
+    }
+
+    private void HandleRefreshTracking()
+    {
+        _currentRefreshCount++;
+        transform.DOPunchRotation(new Vector3(0, 0, 2f), 0.2f);
+
+        if (_currentRefreshCount >= _refreshesBeforeOverflow)
+        {
+            Overflow();
+        }
+    }
+
+    private void Overflow()
+    {
+        _currentRefreshCount = 0;
+        Debug.Log("Refresh Overflow! Bad files escaping!");
+        Sequence overflowSeq = DOTween.Sequence();
+        overflowSeq.Append(transform.DOPunchScale(new Vector3(0.3f, 0.3f, 0.3f), 0.4f));
+        for (int i = 0; i < _overflowSpawnCount; i++)
+        {
+            SpawnBadFileFromBin();
+        }
+    }
+
+    private void SpawnBadFileFromBin()
+    {
+
+        if (_badFilePrefab == null) return;
+        GameObject badFileObj = Instantiate(_badFilePrefab, transform.position, Quaternion.identity);
+        float jumpDistX = Random.Range(_scatterX.x, _scatterX.y);
+        float jumpDistY = Random.Range(_scatterY.x, _scatterY.y);
+        Vector3 targetPos = transform.position + new Vector3(jumpDistX, jumpDistY, 0);
+
+        if (badFileObj.TryGetComponent<ProjectileFile>(out var projectile))
+        {
+            badFileObj.transform.DOJump(targetPos, 3f, 1, 0.6f).SetEase(Ease.OutQuad);
+            badFileObj.transform.DORotate(new Vector3(0, 0, 360f), 0.6f, RotateMode.FastBeyond360);
+            projectile.BounceTo(targetPos, 3f, 0.6f);
         }
 
     }

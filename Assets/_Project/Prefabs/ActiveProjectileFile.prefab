@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 1519787998346509235}
   - component: {fileID: 5347873727153123638}
   m_Layer: 8
-  m_Name: ProjectileFile
+  m_Name: ActiveProjectileFile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -331,18 +331,17 @@ MonoBehaviour:
   curloadStepsTextMeshProUI: {fileID: 1484201875642924187}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 2485287998513396201, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  _hpRange: {x: 2, y: 5}
   _maxHp: 4
   _currentHp: 0
   _isStunned: 0
   damage: 6
-  _startRevealed: 0
   <MoveSpeed>k__BackingField: 2
   _bulletPrefab: {fileID: 7255865115189590923, guid: a66b1a56e209de74e88761b7d3477a6b, type: 3}
   _projectileSpeed: 9
   _fireRate: 1
   _frequency: 0.4
   _amplitude: 1
+  _startRevealed: 1
 --- !u!1 &8168047652789648235
 GameObject:
   m_ObjectHideFlags: 0

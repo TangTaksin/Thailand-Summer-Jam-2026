@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: FileSpawnData
   m_EditorClassIdentifier: Assembly-CSharp::FileSpawnTable
   _entries:
+  - prefab: {fileID: 3477755107130411471, guid: cac8150d965fdd341907728f60d54848, type: 3}
+    weight: 35
   - prefab: {fileID: 646031621814013815, guid: d576bb729680b4b4e8a9d4a0f52c4ba8, type: 3}
     weight: 20
-  - prefab: {fileID: 3477755107130411471, guid: cac8150d965fdd341907728f60d54848, type: 3}
-    weight: 20
   - prefab: {fileID: 740322574324614007, guid: 3b202f02576df934fbbf56b7b3b36018, type: 3}
-    weight: 20
+    weight: 30
   - prefab: {fileID: 7433041041010776109, guid: 8e9653c4be844bc418d54f2658c811f8, type: 3}
-    weight: 20
+    weight: 10
   - prefab: {fileID: 3740270885284919612, guid: 4f75f64cecef4bb41af3d68ce5a94f12, type: 3}
-    weight: 20
+    weight: 5

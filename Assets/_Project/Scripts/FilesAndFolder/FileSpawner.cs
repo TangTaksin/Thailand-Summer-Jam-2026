@@ -20,21 +20,13 @@ public class FileSpawner : MonoBehaviour
     [SerializeField] private Vector2 _maxBounds = new Vector2(7f, 4f);
 
     [Header("Indirect Feedback")]
-    [SerializeField] private SpriteRenderer _mateRenderer; // ลาก Sprite น้องมาใส่
-    [SerializeField] private Color _readyColor = new Color(0.5f, 1f, 0.5f); // สีตอนใกล้ดรอป (เขียวอ่อน)
+    [SerializeField] private SpriteRenderer _mateRenderer;
+    [SerializeField] private Color _readyColor = new Color(0.5f, 1f, 0.5f);
     [SerializeField] private float _shakeIntensity = 0.05f;
 
     [Header("System Notification Text")]
     [SerializeField] private TextMeshPro _terminalText;
     private Coroutine _messageRoutine;
-    // [TextArea(2, 5)]
-    // [SerializeField]
-    // private string[] _progressMessages = {
-    //     "[System] Scanning for core remnants...",      // 0-30%
-    //     "[System] Core data fragments detected.",      // 31-70%
-    //     "[Warning] High core density localized!",      // 71-90%
-    //     "[Danger] Core extraction imminent!"           // 91-99%
-    // };
 
     private int _currentPityCounter;
 
