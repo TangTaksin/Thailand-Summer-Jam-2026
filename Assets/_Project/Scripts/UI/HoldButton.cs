@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -7,13 +8,14 @@ using UnityEngine.UI;
 public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     [Header("Hold Settings")]
-    public float holdDuration = 5f; // เวลาที่ต้องกดค้าง (วินาที)
-    public Image progressImage;     // รูป UI ที่จะให้เลื่อนเป็น Progress
+    public float holdDuration = 5f;
+    public Image progressImage;
 
     [Header("Events")]
-    public UnityEvent onHoldComplete; // Event เมื่อกดค้างสำเร็จ
+    public UnityEvent onHoldComplete;
 
     private bool _isHolding = false;
+    private bool _isAlreadyFired = false;
     private float _holdTimer = 0f;
     private Button _button;
 
@@ -25,11 +27,11 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
 
     private void Update()
     {
-        // ทำงานเฉพาะตอนกำลังกดค้าง และปุ่มนั้นสามารถกดได้ (interactable = true)
-        if (_isHolding && _button.interactable)
+        if (_button == null || progressImage == null) return;
+
+        if (_isHolding && _button.interactable && !_isAlreadyFired)
         {
             _holdTimer += Time.deltaTime;
-
             if (progressImage != null)
             {
                 progressImage.fillAmount = _holdTimer / holdDuration;
@@ -37,33 +39,42 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
 
             if (_holdTimer >= holdDuration)
             {
-                _isHolding = false;
-                onHoldComplete?.Invoke(); // เรียกใช้งานฟังก์ชันที่ผูกไว้
-                ResetProgress();
+                CompleteHold();
             }
         }
     }
 
+    private void CompleteHold()
+    {
+        _isHolding = false;
+        _isAlreadyFired = true;
+        _button.interactable = false;
+
+        onHoldComplete?.Invoke();
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!_button.interactable) return;
+        if (!_button.interactable || _isAlreadyFired) return;
         _isHolding = true;
         _holdTimer = 0f;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (_isAlreadyFired) return;
         ResetProgress();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        ResetProgress(); // ยกเลิกถ้าย้ายเมาส์ออกนอกปุ่ม
+        if (_isAlreadyFired) return;
+        ResetProgress();
     }
 
     private void OnDisable()
     {
-        ResetProgress(); // รีเซ็ตทุกครั้งที่เมนูปิด (กันบั๊กกดค้างค้างไว้)
+        ResetProgress();
     }
 
     private void ResetProgress()
@@ -72,4 +83,5 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
         _holdTimer = 0f;
         if (progressImage != null) progressImage.fillAmount = 0f;
     }
+
 }

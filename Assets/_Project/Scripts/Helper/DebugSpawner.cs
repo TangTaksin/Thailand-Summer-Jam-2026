@@ -42,6 +42,8 @@ public class DebugSpawner : MonoBehaviour
 
     [Tooltip("กดปุ่มนี้เพื่อ Reset Cortisol เป็น 0 (Debug)")]
     [SerializeField] private KeyCode _resetCortisolKey = KeyCode.C;
+
+        [SerializeField] private KeyCode _gameoverKey  = KeyCode.C;
     private ScreenMateStats _screenMateStats;
 
     // -----------------------------------------------------------------------
@@ -79,6 +81,10 @@ public class DebugSpawner : MonoBehaviour
         {
             ResetCortisol();
 
+        }
+        if (Input.GetKeyDown(_gameoverKey))
+        {
+            ActionCommands.OnGameOver?.Invoke();
         }
 
     }

@@ -60,7 +60,7 @@ public class CoreFolder : BaseFolder
         if (_targetCount == 0 && !_isReadyAnimationPlaying)
         {
             _isReadyAnimationPlaying = true;
-            Debug.Log("🎉 Ready to Format! Core files collected.");
+            Debug.Log("Ready to Format! Core files collected.");
 
             transform.DOKill();
             transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
@@ -82,7 +82,6 @@ public class CoreFolder : BaseFolder
         if (_targetCount != 0) return;
 
         Debug.Log("System Formatted!");
-
         transform.DOKill();
         _isReadyAnimationPlaying = false;
         transform.DOPunchPosition(Vector3.down * 0.5f, 0.4f, 10, 1);

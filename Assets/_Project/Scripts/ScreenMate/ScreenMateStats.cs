@@ -81,7 +81,6 @@ public class ScreenMateStats : MonoBehaviour
         {
             _isGameOver = true;
             Debug.LogError("Game Over!");
-            ActionCommands.OnGameOver?.Invoke();
         }
     }
 
