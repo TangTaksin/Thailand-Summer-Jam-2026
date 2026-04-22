@@ -143,9 +143,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2191bf3bc798665458d2347382b94b1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoreFile
-  minLoadSteps: 12
-  maxLoadSteps: 21
-  _loadedFileName: NewFile.exe
+  minLoadSteps: 8
+  maxLoadSteps: 12
+  _loadedFileName: CoreFile.exe
   fileNameTextMeshPro: {fileID: 3669339080503286283}
   curloadStepsTextMeshProUI: {fileID: 9010782026608463583}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}

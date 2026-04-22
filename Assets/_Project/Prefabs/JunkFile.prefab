@@ -150,7 +150,7 @@ MonoBehaviour:
   curloadStepsTextMeshProUI: {fileID: 4297672128700488923}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 8908491234983744541, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  _badFilePrefab: {fileID: 740322574324614007, guid: 951bc958ce681964abc4c66456c62e82, type: 3}
+  _badFilePrefab: {fileID: 646031621814013815}
 --- !u!1 &4942974964598478317
 GameObject:
   m_ObjectHideFlags: 0

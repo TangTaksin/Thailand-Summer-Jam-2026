@@ -1,7 +1,9 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class ContextMenu : MonoBehaviour
 {
@@ -10,6 +12,15 @@ public class ContextMenu : MonoBehaviour
     public GameObject[] defaultMenuOptions;
     public GameObject emptyBinButton;
     public GameObject formatButton;
+
+    [Header("Refresh System")]
+    public int maxreFreshCount = 50;
+    public int refreshCharges = 10;
+    public int bonusPerNewFile = 8;
+
+    [Header("Cursor UI")]
+    public TextMeshProUGUI refreshChargesText;
+    public Vector3 textOffset = new Vector3(20f, -20f, 0f);
 
     private BinFolder _targetBin;
     private CoreFolder _targetCoreFolder;
@@ -40,6 +51,21 @@ public class ContextMenu : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             OpenMenu();
+        }
+
+        if (refreshChargesText != null)
+        {
+            refreshChargesText.text = refreshCharges.ToString();
+            refreshChargesText.transform.position = Input.mousePosition + textOffset;
+
+            if (refreshCharges <= 0)
+            {
+                refreshChargesText.color = Color.red;
+            }
+            else
+            {
+                refreshChargesText.color = Color.white;
+            }
         }
     }
 
@@ -102,6 +128,38 @@ public class ContextMenu : MonoBehaviour
         else
         {
             ToggleDefaultOptions(true);
+            if (defaultMenuOptions.Length > 1)
+            {
+                Button refreshBtn = defaultMenuOptions[1].GetComponent<Button>();
+                if (refreshBtn != null)
+                {
+                    refreshBtn.interactable = refreshCharges > 0;
+                }
+
+                Image newFileImage = defaultMenuOptions[0].GetComponent<Image>();
+                if (newFileImage != null)
+                {
+                    newFileImage.DOKill();
+                    defaultMenuOptions[0].transform.DOKill();
+
+                    if (refreshCharges <= 0)
+                    {
+                        newFileImage.color = Color.white;
+                        newFileImage.DOColor(new Color(1f, 1f, 0.5f), 0.5f)
+                                    .SetLoops(-1, LoopType.Yoyo)
+                                    .SetUpdate(true);
+
+                        defaultMenuOptions[0].transform.DOScale(1.05f, 0.5f)
+                                    .SetLoops(-1, LoopType.Yoyo)
+                                    .SetUpdate(true);
+                    }
+                    else
+                    {
+                        newFileImage.color = Color.white;
+                        defaultMenuOptions[0].transform.localScale = Vector3.one;
+                    }
+                }
+            }
         }
     }
 
@@ -121,6 +179,7 @@ public class ContextMenu : MonoBehaviour
 
     public void OnClick_NewFileCommand()
     {
+        refreshCharges = Mathf.Min(refreshCharges + bonusPerNewFile, maxreFreshCount);
         ActionCommands.OnNewFileCommand?.Invoke();
         OnContextSelect?.Invoke();
         CloseMenu();
@@ -128,9 +187,13 @@ public class ContextMenu : MonoBehaviour
 
     public void OnClick_RefreshCommand()
     {
-        ActionCommands.OnRefreshCommand?.Invoke();
-        OnContextSelect?.Invoke();
-        CloseMenu();
+        if (refreshCharges > 0)
+        {
+            refreshCharges--;
+            ActionCommands.OnRefreshCommand?.Invoke();
+            OnContextSelect?.Invoke();
+            CloseMenu();
+        }
     }
 
     public void OnClick_DeleteCommand()
@@ -139,7 +202,6 @@ public class ContextMenu : MonoBehaviour
         {
             if (hoveredFile.CanDelete(out string message))
             {
-                Debug.Log("ลบสำเร็จ");
                 hoveredFile.Delete();
             }
             else

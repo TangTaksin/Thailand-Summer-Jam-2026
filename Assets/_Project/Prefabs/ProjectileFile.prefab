@@ -340,7 +340,7 @@ MonoBehaviour:
   <MoveSpeed>k__BackingField: 2
   _bulletPrefab: {fileID: 7255865115189590923, guid: a66b1a56e209de74e88761b7d3477a6b, type: 3}
   _projectileSpeed: 8
-  _fireRate: 2
+  _fireRate: 3
   _frequency: 0.4
   _amplitude: 1
 --- !u!1 &8168047652789648235

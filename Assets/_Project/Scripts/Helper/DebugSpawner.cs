@@ -105,6 +105,7 @@ public class DebugSpawner : MonoBehaviour
         Vector3 spawnPos = _spawnAtMouse ? GetMouseWorldPosition() : GetRandomPosition();
 
         Instantiate(entry.prefab, spawnPos, Quaternion.identity);
+        // ActionCommands.OnNewFileCommand?.Invoke();
     }
 
     /// <summary>
@@ -118,6 +119,13 @@ public class DebugSpawner : MonoBehaviour
             Destroy(file.gameObject);
         }
         Debug.Log($"[DebugSpawner] Cleared {allFiles.Length} file(s).");
+
+        Invoke(nameof(NotifyFilesDeleted), 0.1f);
+    }
+
+    private void NotifyFilesDeleted()
+    {
+        ActionCommands.OnDeleteCommand?.Invoke();
     }
 
     private Vector3 GetMouseWorldPosition()
