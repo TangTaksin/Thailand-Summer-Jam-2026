@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class ProjectileFile : BadFile
 {
@@ -16,6 +17,7 @@ public class ProjectileFile : BadFile
     private Vector3 _startPos;
 
     private bool _isDragging = false;
+    private bool _isTweening = false;
 
     protected override void Start()
     {
@@ -26,7 +28,7 @@ public class ProjectileFile : BadFile
 
     private void Update()
     {
-        bool canAction = CurLoadSteps == 0 && CurrentHp > 0 && _targetScreenMate != null;
+        bool canAction = CurLoadSteps == 0 && CurrentHp > 0 && _targetScreenMate != null && !_isTweening && !_isDragging;
 
         if (canAction)
         {
@@ -50,8 +52,9 @@ public class ProjectileFile : BadFile
         if (_isDragging) return;
         _sineTimer += Time.deltaTime;
 
-        Vector2 dirToTarget = (_targetScreenMate.position - _startPos).normalized;
+        Vector2 dirToTarget = ((Vector2)_targetScreenMate.position - (Vector2)_startPos).normalized;
         Vector3 sideDir = new Vector2(-dirToTarget.y, dirToTarget.x);
+
         float sineOffset = Mathf.Sin(_sineTimer * _frequency * 2 * Mathf.PI) * _amplitude;
         transform.position = _startPos + (sideDir * sineOffset);
     }
@@ -72,9 +75,24 @@ public class ProjectileFile : BadFile
         }
     }
 
+    public void BounceTo(Vector3 targetPos, float height, float duration)
+    {
+        _isTweening = true;
+        transform.DOKill();
+
+        transform.DOJump(targetPos, height, 1, duration)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() => {
+                _startPos = transform.position;
+                _sineTimer = 0f;
+                _isTweening = false;
+            });
+    }
+
     protected override void OnMouseDown()
     {
         base.OnMouseDown();
+        transform.DOKill();
 
         _isDragging = true;
 

@@ -100,7 +100,13 @@ public class CoreFolder : BaseFolder
         float randomOffsetY = Random.Range(_scatterY.x, _scatterY.y);
         Vector3 endPos = transform.position + new Vector3(_bounceDistanceX + randomOffsetX, randomOffsetY, 0f);
 
-        file.transform.DOJump(endPos, _bounceHeight, 1, _bounceDuration)
-            .SetEase(Ease.OutQuad);
+        if (file is ProjectileFile projectile)
+        {
+            projectile.BounceTo(endPos, _bounceHeight, _bounceDuration);
+        }
+        else
+        {
+            file.transform.DOJump(endPos, _bounceHeight, 1, _bounceDuration).SetEase(Ease.OutQuad);
+        }
     }
 }
