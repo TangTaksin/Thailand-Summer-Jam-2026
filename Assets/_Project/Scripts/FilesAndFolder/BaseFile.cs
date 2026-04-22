@@ -129,19 +129,19 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
 
     protected virtual void OnMouseDown()
     {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _dragOffset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
+        // Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // _dragOffset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
     }
 
-    protected virtual void OnMouseDrag()
-    {
-        Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(
-            mousePos.x + _dragOffset.x,
-            mousePos.y + _dragOffset.y,
-            transform.position.z
-        );
-    }
+    // protected virtual void OnMouseDrag()
+    // {
+    //     Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+    //     transform.position = new Vector3(
+    //         mousePos.x + _dragOffset.x,
+    //         mousePos.y + _dragOffset.y,
+    //         transform.position.z
+    //     );
+    // }
 
     protected virtual void OnMouseUp()
     {

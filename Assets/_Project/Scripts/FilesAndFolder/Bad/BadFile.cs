@@ -24,6 +24,8 @@ public class BadFile : BaseFile, IStatModifier, IMovable
 
     private void Update()
     {
+        if (element_state != ScreenElementState.Normal) return;
+        
         bool canMove = CurLoadSteps == 0 && !_isStunned && _targetScreenMate != null;
 
         if (canMove)

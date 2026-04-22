@@ -16,7 +16,7 @@ public class ProjectileFile : BadFile
     private float _sineTimer;
     private Vector3 _startPos;
 
-    private bool _isDragging = false;
+    //private bool _isDragging = false;
     private bool _isTweening = false;
 
     protected override void Start()
@@ -28,7 +28,12 @@ public class ProjectileFile : BadFile
 
     private void Update()
     {
-        bool canAction = CurLoadSteps == 0 && CurrentHp > 0 && _targetScreenMate != null && !_isTweening && !_isDragging;
+        bool canAction = 
+        CurLoadSteps == 0 && 
+        CurrentHp > 0 && 
+        _targetScreenMate != null && 
+        !_isTweening && 
+        element_state == ScreenElementState.Normal;
 
         if (canAction)
         {
@@ -49,7 +54,6 @@ public class ProjectileFile : BadFile
 
     private void HandleMovement()
     {
-        if (_isDragging) return;
         _sineTimer += Time.deltaTime;
 
         Vector2 dirToTarget = ((Vector2)_targetScreenMate.position - (Vector2)_startPos).normalized;
@@ -61,7 +65,7 @@ public class ProjectileFile : BadFile
 
     private void ShootAtTarget()
     {
-        if (_bulletPrefab == null || _targetScreenMate == null || _isDragging) return;
+        if (_bulletPrefab == null || _targetScreenMate == null) return;
 
         GameObject bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
         Vector2 direction = (_targetScreenMate.position - transform.position).normalized;
@@ -89,19 +93,9 @@ public class ProjectileFile : BadFile
             });
     }
 
-    protected override void OnMouseDown()
+    protected override void OnNormalState()
     {
-        base.OnMouseDown();
-        transform.DOKill();
-
-        _isDragging = true;
-
-    }
-
-    protected override void OnMouseUp()
-    {
-        base.OnMouseUp();
-        _isDragging = false;
+        base.OnNormalState();
 
         if (CurrentHp > 0)
         {
@@ -109,4 +103,32 @@ public class ProjectileFile : BadFile
             _sineTimer = 0f;
         }
     }
+
+    protected override void OnFreezeState()
+    {
+        base.OnFreezeState();
+
+        transform.DOKill();
+    }
+
+    // protected override void OnMouseDown()
+    // {
+    //     //base.OnMouseDown();
+    //     transform.DOKill();
+
+    //     //_isDragging = true;
+
+    // }
+
+    // protected override void OnMouseUp()
+    // {
+    //     base.OnMouseUp();
+    //     //_isDragging = false;
+
+    //     if (CurrentHp > 0)
+    //     {
+    //         _startPos = transform.position;
+    //         _sineTimer = 0f;
+    //     }
+    // }
 }

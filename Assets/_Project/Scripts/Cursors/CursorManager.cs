@@ -30,6 +30,8 @@ public class CursorManager : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         col2D = GetComponent<BoxCollider2D>();
 
+        Cursor.lockState = CursorLockMode.Confined;
+
         action_point = InputSystem.actions.FindAction("Point");
         action_click = InputSystem.actions.FindAction("Click");
         action_rightClick = InputSystem.actions.FindAction("RightClick");
@@ -121,19 +123,26 @@ public class CursorManager : MonoBehaviour
     void ClickRelease(InputAction.CallbackContext ctx)
     {
         print("release");
-        isDragging = false;
 
-        //reset state ของทุก element ที่ถูก freeze ตอน drag
-        foreach (var ele in inSelection)
+        if (isDragging)
         {
-            ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+            isDragging = false;
+            //reset state ของทุก element ที่ถูก freeze ตอน drag
+            foreach (var ele in inSelection)
+            {
+                ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+            }
         }
 
+        // sent inSelection list to the box
         if (isGroupSelecting)
         {
-            selBox.AddtoBox(inSelection.ToArray());
+            var selection_storage = inSelection.ToArray();
             isGroupSelecting = false;
             DisableCollider();
+
+
+            selBox.AddtoBox(selection_storage);
         }
     }
 
