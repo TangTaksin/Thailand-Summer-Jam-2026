@@ -375,9 +375,9 @@ GameObject:
   - component: {fileID: 5463310484341878910}
   - component: {fileID: 1523777367936579139}
   - component: {fileID: 1957623506217938351}
-  - component: {fileID: 4995705158316124184}
   - component: {fileID: 5252204233036968202}
-  m_Layer: 0
+  - component: {fileID: 4995705158316124184}
+  m_Layer: 9
   m_Name: CoreFolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -487,20 +487,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &4995705158316124184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5978936558094172262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e8be4a4bc7ff8647b458dffa03fed51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CoreFolder
-  _targetCount: 5
-  _textCount: {fileID: 608750561511379238}
 --- !u!61 &5252204233036968202
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -547,3 +533,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.75, y: 0.75}
   m_EdgeRadius: 0
+--- !u!114 &4995705158316124184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5978936558094172262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e8be4a4bc7ff8647b458dffa03fed51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoreFolder
+  _targetCount: 10
+  _textCount: {fileID: 608750561511379238}
+  _bounceDistanceX: 2.5
+  _bounceHeight: 1.5
+  _bounceDuration: 0.3
+  _scatterX: {x: 1, y: 17}
+  _scatterY: {x: -5, y: 0}

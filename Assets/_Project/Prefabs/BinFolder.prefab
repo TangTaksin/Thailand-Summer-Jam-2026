@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2662548248468061712}
   - component: {fileID: 2394487990004647655}
   - component: {fileID: 5893859451004904358}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BinFolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,6 +171,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c1e796273f2af478c83895b672d054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BinFolder
+  _requiredFiles: 10
+  _bounceDistanceX: 2.5
+  _bounceHeight: 1.5
+  _bounceDuration: 0.5
+  _scatterX: {x: 1, y: 18}
+  _scatterY: {x: -3, y: 1}
 --- !u!1 &7170940983723615229
 GameObject:
   m_ObjectHideFlags: 0

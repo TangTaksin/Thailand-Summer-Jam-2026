@@ -324,8 +324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d88a65077a3a8b48b65bd0441d1b742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileFile
-  minLoadSteps: 1
-  maxLoadSteps: 1
+  minLoadSteps: 3
+  maxLoadSteps: 5
   _loadedFileName: NewFile.exe
   fileNameTextMeshPro: {fileID: 5619545070386972}
   curloadStepsTextMeshProUI: {fileID: 1484201875642924187}
@@ -334,10 +334,10 @@ MonoBehaviour:
   _maxHp: 4
   _currentHp: 0
   _isStunned: 0
-  damage: 20
+  damage: 6
   <MoveSpeed>k__BackingField: 2
   _bulletPrefab: {fileID: 7255865115189590923, guid: a66b1a56e209de74e88761b7d3477a6b, type: 3}
-  _projectileSpeed: 5
+  _projectileSpeed: 9
   _fireRate: 1
   _frequency: 0.4
   _amplitude: 1
