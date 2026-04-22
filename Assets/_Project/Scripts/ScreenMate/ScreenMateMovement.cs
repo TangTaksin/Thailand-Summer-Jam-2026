@@ -1,15 +1,14 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class ScreenMateMovement : MonoBehaviour
+public class ScreenMateMovement : ScreenElements
 {
     // สร้างหมวดหมู่สถานะ (State) ของตัวละคร
     public enum MateState
     {
         Walk,
         Idle,
-        Falling,
-        Dragged
+        Falling
     }
 
     [Header("Current State")]
@@ -27,45 +26,39 @@ public class ScreenMateMovement : MonoBehaviour
     public float maxIdleTime = 3f;
 
     private int movingDirection = 1;
-    private Rigidbody2D rb;
-    private Vector3 offset;
     private float stateTimer = 0f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
-
-    //keep
     private bool _isGameOver = false;
 
-    //keep
+
     private void OnEnable()
     {
         ActionCommands.OnGameOver += HandleGameOver;
     }
 
-    //keep
     private void OnDisable()
     {
         ActionCommands.OnGameOver -= HandleGameOver;
     }
 
-
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        rb.freezeRotation = true;
+        rb2D.freezeRotation = true;
         SetWalkState();
     }
 
     private void FixedUpdate()
     {
         if (_isGameOver) return;
-        if (currentState == MateState.Dragged) return;
+        if (element_state != ScreenElementState.Normal) return;
 
-        if (rb.linearVelocity.y < -0.1f)
+        if (rb2D.linearVelocity.y < -0.1f)
         {
             currentState = MateState.Falling;
         }
-        else if (currentState == MateState.Falling && Mathf.Abs(rb.linearVelocity.y) <= 0.05f)
+        else if (currentState == MateState.Falling && Mathf.Abs(rb2D.linearVelocity.y) <= 0.05f)
         {
             SetWalkState();
         }
@@ -79,11 +72,11 @@ public class ScreenMateMovement : MonoBehaviour
 
             case MateState.Idle:
                 HandleStateTimer();
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
                 break;
 
             case MateState.Falling:
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
                 break;
         }
     }
@@ -118,7 +111,7 @@ public class ScreenMateMovement : MonoBehaviour
 
     private void Patrol()
     {
-        rb.linearVelocity = new Vector2(movingDirection * moveSpeed, rb.linearVelocity.y);
+        rb2D.linearVelocity = new Vector2(movingDirection * moveSpeed, rb2D.linearVelocity.y);
 
         if (transform.position.x >= rightBound && movingDirection == 1)
         {
@@ -141,31 +134,8 @@ public class ScreenMateMovement : MonoBehaviour
     private void HandleGameOver()
     {
         _isGameOver = true;
-        rb.linearVelocity = Vector2.zero;
+        rb2D.linearVelocity = Vector2.zero;
         currentState = MateState.Idle;
         Debug.Log("[ScreenMateMovement] Game Over — Movement stopped.");
-    }
-
-    private void OnMouseDown()
-    {
-        if (_isGameOver) return;
-        currentState = MateState.Dragged;
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        rb.linearVelocity = Vector2.zero;
-
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        offset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
-    }
-
-    private void OnMouseDrag()
-    {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePos.x + offset.x, mousePos.y + offset.y, transform.position.z);
-    }
-
-    private void OnMouseUp()
-    {
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        currentState = MateState.Falling;
     }
 }
