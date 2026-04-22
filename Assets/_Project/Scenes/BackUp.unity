@@ -2444,6 +2444,7 @@ MonoBehaviour:
   _maxCortisol: 200
   _passiveIncreaseRate: 1
   _invincibleTimer: 0
+  spriteRenderer: {fileID: 1553874459}
 --- !u!1 &1585253425
 GameObject:
   m_ObjectHideFlags: 0

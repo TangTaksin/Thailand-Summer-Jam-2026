@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class BaseFile : MonoBehaviour, IRefreshable, IDeletable
+public class BaseFile : ScreenElements, IRefreshable, IDeletable
 {
     [Header("File Status")]
     [SerializeField] protected int minLoadSteps = 3;
