@@ -3,7 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ScreenMateMovement : ScreenElements
 {
-    // สร้างหมวดหมู่สถานะ (State) ของตัวละคร
     public enum MateState
     {
         Walk,
@@ -29,6 +28,8 @@ public class ScreenMateMovement : ScreenElements
     private float stateTimer = 0f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     private bool _isGameOver = false;
+
+    public override bool IsGroupSelectable => false;
 
 
     private void OnEnable()

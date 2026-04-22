@@ -45,7 +45,7 @@ public class CursorManager : MonoBehaviour
     {
         action_point.performed -= PointerUpdate;
         action_click.performed -= Click;
-        action_click.canceled += ClickRelease;
+        action_click.canceled -= ClickRelease; //แก้ += เป็น -=
         action_rightClick.performed -= RightClick;
     }
 
@@ -102,7 +102,6 @@ public class CursorManager : MonoBehaviour
                     }
 
                 isDragging = true;
-                
             }
         }
         // else start box selection
@@ -121,12 +120,17 @@ public class CursorManager : MonoBehaviour
         print("release");
         isDragging = false;
 
+        //reset state ของทุก element ที่ถูก freeze ตอน drag
+        foreach (var ele in inSelection)
+        {
+            ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+        }
+
         if (isGroupSelecting)
         {
             selBox.AddtoBox(inSelection.ToArray());
             isGroupSelecting = false;
             DisableCollider();
-            
         }
     }
 
@@ -144,6 +148,10 @@ public class CursorManager : MonoBehaviour
     void AddSelection(ScreenElements scr_ele)
     {
         if (scr_ele is SelectionBox && isGroupSelecting)
+            return;
+
+        //ScreenMate ไม่ถูก group select
+        if (isGroupSelecting && !scr_ele.IsGroupSelectable)
             return;
 
         if (!inSelection.Contains(scr_ele))
