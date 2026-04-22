@@ -30,16 +30,35 @@ public class ScreenMateMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Vector3 offset;
     private float stateTimer = 0f;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+
+    //keep
+    private bool _isGameOver = false;
+
+    //keep
+    private void OnEnable()
+    {
+        ActionCommands.OnGameOver += HandleGameOver;
+    }
+
+    //keep
+    private void OnDisable()
+    {
+        ActionCommands.OnGameOver -= HandleGameOver;
+    }
+
 
     private void Start()
     {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        rb.freezeRotation = true; 
+        rb.freezeRotation = true;
         SetWalkState();
     }
 
     private void FixedUpdate()
     {
+        if (_isGameOver) return;
         if (currentState == MateState.Dragged) return;
 
         if (rb.linearVelocity.y < -0.1f)
@@ -88,13 +107,13 @@ public class ScreenMateMovement : MonoBehaviour
     private void SetWalkState()
     {
         currentState = MateState.Walk;
-        stateTimer = Random.Range(minWalkTime, maxWalkTime); 
+        stateTimer = Random.Range(minWalkTime, maxWalkTime);
     }
 
     private void SetIdleState()
     {
         currentState = MateState.Idle;
-        stateTimer = Random.Range(minIdleTime, maxIdleTime); 
+        stateTimer = Random.Range(minIdleTime, maxIdleTime);
     }
 
     private void Patrol()
@@ -115,13 +134,21 @@ public class ScreenMateMovement : MonoBehaviour
 
     private void FlipSprite()
     {
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
+        _spriteRenderer.flipX = !_spriteRenderer.flipX;
+    }
+
+    //keep
+    private void HandleGameOver()
+    {
+        _isGameOver = true;
+        rb.linearVelocity = Vector2.zero;
+        currentState = MateState.Idle;
+        Debug.Log("[ScreenMateMovement] Game Over — Movement stopped.");
     }
 
     private void OnMouseDown()
     {
+        if (_isGameOver) return;
         currentState = MateState.Dragged;
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;

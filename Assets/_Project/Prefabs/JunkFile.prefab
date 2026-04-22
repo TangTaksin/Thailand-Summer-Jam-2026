@@ -143,14 +143,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 204b4fc33e62c5f4b9ba933df268de17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JunkFile
-  minSteps: 3
-  maxSteps: 8
-  loadedFileName: JunkFile
+  minLoadSteps: 3
+  maxLoadSteps: 7
+  _loadedFileName: NewFile.exe
   fileNameTextMeshPro: {fileID: 3939354997920605599}
   curloadStepsTextMeshProUI: {fileID: 4297672128700488923}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 8908491234983744541, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  spriteRenderer: {fileID: 2943763280502502400}
+  _badFilePrefab: {fileID: 6838882762295703781, guid: 5c15047584c151d4eb91a6aac133ec9f, type: 3}
 --- !u!1 &4942974964598478317
 GameObject:
   m_ObjectHideFlags: 0

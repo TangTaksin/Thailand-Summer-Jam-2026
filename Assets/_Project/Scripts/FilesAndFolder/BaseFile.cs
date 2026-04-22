@@ -1,18 +1,20 @@
 using TMPro;
 using UnityEngine;
 
-public class BaseFile : MonoBehaviour
+public class BaseFile : MonoBehaviour, IRefreshable, IDeletable
 {
     [Header("File Status")]
-    [SerializeField] protected int minSteps = 3;
-    [SerializeField] protected int maxSteps = 7;
+    [SerializeField] protected int minLoadSteps = 3;
+    [SerializeField] protected int maxLoadSteps = 7;
 
-    protected int currentMaxSteps;
-    protected int curloadSteps;
+    protected int _currentMaxLoadSteps;
+    public int CurLoadSteps { get; protected set; }
 
     [Header("File Name")]
     protected string brokenFileName;
-    public string loadedFileName = "NewFile.exe";
+    [SerializeField] protected string _loadedFileName = "NewFile.exe";
+    public string LoadedFileName => _loadedFileName;
+
 
     [Header("Name Generation")]
     private readonly string[] extensions = { ".tmp", ".rov", ".dll", ".log", ".dat" };
@@ -24,12 +26,14 @@ public class BaseFile : MonoBehaviour
     [Header("Sprite Settings")]
     [SerializeField] protected Sprite baseSprites;
     [SerializeField] protected Sprite revealedSprites;
-    [SerializeField] protected SpriteRenderer spriteRenderer;
+    protected SpriteRenderer spriteRenderer;
 
-    private Vector3 offset;
+    private Vector3 _dragOffset;
+    private Camera _mainCamera;
 
     protected virtual void Start()
     {
+        _mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         GenerateComplexBrokenName();
@@ -38,26 +42,42 @@ public class BaseFile : MonoBehaviour
         LoadFile();
     }
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
-        ActionCommands.OnRefreshCommand += ReduceloadSteps;
+        ActionCommands.OnRefreshCommand += Refresh;
     }
 
     protected virtual void OnDisable()
     {
-        ActionCommands.OnRefreshCommand -= ReduceloadSteps;
+        ActionCommands.OnRefreshCommand -= Refresh;
     }
 
-    public void ReduceloadSteps()
+    public virtual void Refresh()
     {
-        if (curloadSteps == 0)
+        ReduceloadSteps();
+    }
+
+    public virtual bool CanDelete(out string reason)
+    {
+        reason = "";
+        return true;
+    }
+
+    public virtual void Delete()
+    {
+        Destroy(gameObject);
+    }
+
+    private void ReduceloadSteps()
+    {
+        if (CurLoadSteps == 0)
         {
             GenerateRandomLoadSteps();
             GenerateComplexBrokenName();
         }
         else
         {
-            curloadSteps--;
+            CurLoadSteps--;
         }
 
         LoadFile();
@@ -65,8 +85,8 @@ public class BaseFile : MonoBehaviour
 
     private void GenerateRandomLoadSteps()
     {
-        currentMaxSteps = Random.Range(minSteps, maxSteps + 1);
-        curloadSteps = currentMaxSteps;
+        _currentMaxLoadSteps = Random.Range(minLoadSteps, maxLoadSteps + 1);
+        CurLoadSteps = _currentMaxLoadSteps;
     }
 
 
@@ -78,15 +98,15 @@ public class BaseFile : MonoBehaviour
         brokenFileName = hexCode + ext;
     }
 
-    public virtual void LoadFile()
+    protected virtual void LoadFile()
     {
-        if (curloadSteps == 0)
+        if (CurLoadSteps == 0)
         {
             spriteRenderer.sprite = revealedSprites;
 
             if (fileNameTextMeshPro != null)
             {
-                fileNameTextMeshPro.text = loadedFileName;
+                fileNameTextMeshPro.text = _loadedFileName;
             }
 
         }
@@ -95,26 +115,49 @@ public class BaseFile : MonoBehaviour
             spriteRenderer.sprite = baseSprites;
             if (fileNameTextMeshPro != null)
             {
-                fileNameTextMeshPro.text = $"{brokenFileName}";
+                fileNameTextMeshPro.text = brokenFileName;
             }
         }
 
         if (curloadStepsTextMeshProUI != null)
         {
-            curloadStepsTextMeshProUI.text = $"{curloadSteps}";
+            curloadStepsTextMeshProUI.text = CurLoadSteps.ToString();
 
         }
     }
 
-    private void OnMouseDown()
+    protected virtual void OnMouseDown()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        offset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
+        _dragOffset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
     }
 
-    private void OnMouseDrag()
+    protected virtual void OnMouseDrag()
     {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePos.x + offset.x, mousePos.y + offset.y, transform.position.z);
+        Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        transform.position = new Vector3(
+            mousePos.x + _dragOffset.x,
+            mousePos.y + _dragOffset.y,
+            transform.position.z
+        );
     }
+
+    protected virtual void OnMouseUp()
+    {
+
+        Collider2D[] hits = Physics2D.OverlapPointAll(transform.position);
+
+        foreach (var hit in hits)
+        {
+            BaseFolder folder = hit.GetComponent<BaseFolder>();
+
+            if (folder != null)
+            {
+                folder.ReceiveFile(this);
+                break;
+            }
+        }
+    }
+
+
 }

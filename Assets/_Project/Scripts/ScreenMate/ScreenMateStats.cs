@@ -1,45 +1,121 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ScreenMateStats : MonoBehaviour
 {
-    public Slider cortisolSlider;
-    public float maxCortisol = 100f;
-    
-    [Header("Passive Increase Settings")]
-    public float passiveIncreaseRate = 2f;
+    public Slider _cortisolSlider;
+    public float _maxCortisol = 100f;
 
-    private float currentCortisol = 0f;
+    [Header("Passive Increase Settings")]
+    public float _passiveIncreaseRate = 2f;
+
+    public float CurrentCortisol { get; private set; } = 0f;
+    public float MaxCortisol => _maxCortisol;
+
+    private bool _isGameOver = false;
+
+    public float _invincibleTimer = 0f;
+    public bool _isInvincible => _invincibleTimer > 0;
+
+    private SpriteRenderer spriteRenderer;
+
 
     private void Start()
     {
-        if (cortisolSlider) cortisolSlider.maxValue = maxCortisol;
+        if (_cortisolSlider) _cortisolSlider.maxValue = _maxCortisol;
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+
     }
 
     private void Update()
     {
-        UpdateCortisol(passiveIncreaseRate * Time.deltaTime);
+        if (_invincibleTimer > 0)
+        {
+            _invincibleTimer -= Time.deltaTime;
+        }
+
+        UpdateCortisol(_passiveIncreaseRate * Time.deltaTime);
+
+        if (spriteRenderer != null)
+        {
+            if (_isInvincible)
+            {
+                spriteRenderer.color = Color.gold;
+            }
+            else
+            {
+                spriteRenderer.color = Color.white;
+            }
+
+        }
     }
 
     public void UpdateCortisol(float amount)
     {
-        currentCortisol = Mathf.Clamp(currentCortisol + amount, 0, maxCortisol);
-        
-        if (cortisolSlider) cortisolSlider.value = currentCortisol;
+        if (_isGameOver) return;
 
-        if (currentCortisol >= maxCortisol) 
+        if (_isInvincible && amount > 0)
         {
-            Debug.LogError("Game Over!");
+            return;
         }
+
+        CurrentCortisol = Mathf.Clamp(CurrentCortisol + amount, 0, _maxCortisol);
+
+        if (_cortisolSlider) _cortisolSlider.value = CurrentCortisol;
+
+        if (CurrentCortisol >= _maxCortisol)
+        {
+            _isGameOver = true;
+            Debug.LogError("Game Over!");
+            ActionCommands.OnGameOver?.Invoke();
+        }
+    }
+
+    public void ActivateInvincibility(float duration)
+    {
+        _invincibleTimer = duration;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        IStatModifier effect = other.GetComponent<IStatModifier>();
 
+        BaseFile file = other.GetComponent<BaseFile>();
+
+        if (file != null)
+        {
+            if (file.CurLoadSteps == 0)
+            {
+                ActionCommands.OnFileEaten?.Invoke(file);
+
+                if (!(file is BadFile))
+                {
+                    UpdateCortisol(-10f);
+                    Debug.Log($"[Eat] กิน {file.gameObject.name} แล้ว! ลุ้น Core File...");
+                }
+                Destroy(file.gameObject);
+                return;
+            }
+        }
+        
+        IStatModifier effect = other.GetComponent<IStatModifier>();
         if (effect != null)
         {
             effect.ApplyModifier(this);
         }
+    }
+
+    public void DEBUG_ResetCortisol()
+    {
+        _isGameOver = false;
+        CurrentCortisol = 0f;
+        _invincibleTimer = 0f;
+
+        if (_cortisolSlider != null)
+            _cortisolSlider.value = 0f;
+
+        Debug.Log("[ScreenMateStats] DEBUG: Cortisol reset to 0.");
     }
 }
