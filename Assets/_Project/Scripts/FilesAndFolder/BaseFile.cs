@@ -31,8 +31,9 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
     private Vector3 _dragOffset;
     private Camera _mainCamera;
 
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         _mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
