@@ -3,13 +3,17 @@ using UnityEngine;
 public class BadFile : BaseFile, IStatModifier, IMovable
 {
     [Header("HP System")]
-    [SerializeField] private int _maxHp = 3;
+    [SerializeField] private Vector2Int _hpRange = new Vector2Int(2, 5);
+    [SerializeField] private int _maxHp;
     [SerializeField] private int _currentHp;
     public int CurrentHp => _currentHp;
     [SerializeField] private bool _isStunned = false;
 
     [Header("Combat Settings")]
     [SerializeField] public float damage = 20f;
+
+    [Header("Spawn Mode")]
+    [SerializeField] protected bool _startRevealed = false;
 
     [Header("Movement Settings")]
     [field: SerializeField] public float MoveSpeed { get; set; } = 2f;
@@ -19,7 +23,18 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     protected override void Start()
     {
         base.Start();
+        _maxHp = Random.Range(_hpRange.x, _hpRange.y + 1);
+        InitializeHp();
         FindScreenMateTarget();
+
+        if (_startRevealed)
+        {
+            CurLoadSteps = 0;
+            InitializeHp();
+        }
+
+        LoadFile();
+
     }
 
     private void Update()

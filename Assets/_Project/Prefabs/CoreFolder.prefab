@@ -545,7 +545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e8be4a4bc7ff8647b458dffa03fed51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoreFolder
-  _targetCount: 10
+  _targetCount: 5
   _textCount: {fileID: 608750561511379238}
   _bounceDistanceX: 2.5
   _bounceHeight: 1.5
