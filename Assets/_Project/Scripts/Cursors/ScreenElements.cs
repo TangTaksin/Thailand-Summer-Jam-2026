@@ -24,17 +24,29 @@ public class ScreenElements : MonoBehaviour
     {
         element_state = state;
 
-        if (rb2D != null)
+        switch (element_state)
         {
-            if (state == ScreenElementState.Freeze)
-            {
-                rb2D.linearVelocity = Vector2.zero;
-                rb2D.gravityScale = 0f;
-            }
-            else
-            {
-                rb2D.gravityScale = 1f;
-            }
+            case ScreenElementState.Normal:
+                OnNormalState();
+                break;
+            case ScreenElementState.Freeze:
+                OnFreezeState();
+                break;
+        }
+    }
+
+    protected virtual void OnNormalState()
+    {
+         if (rb2D != null)
+            rb2D.gravityScale = 1f;
+    }
+
+    protected virtual void OnFreezeState()
+    {
+         if (rb2D != null)
+         {
+            rb2D.linearVelocity = Vector2.zero;
+            rb2D.gravityScale = 0f;
         }
     }
 

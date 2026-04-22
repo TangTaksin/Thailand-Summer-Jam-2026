@@ -10,7 +10,7 @@ public class SelectionBox : ScreenElements
     SpriteRenderer boxRenderer;
     BoxCollider2D boxCollider2D;
 
-    ScreenElements[] insideTheBox;
+    [SerializeField] ScreenElements[] insideTheBox = new ScreenElements[0];
 
     void Awake()
     {
@@ -23,11 +23,13 @@ public class SelectionBox : ScreenElements
     void OnEnable()
     {
         ActionCommands.OnDeleteCommand += DeleteFilesInBox;
+        ContextMenu.OnContextSelect += OnContextSelect;
     }
 
     void OnDisable()
     {
         ActionCommands.OnDeleteCommand -= DeleteFilesInBox;
+        ContextMenu.OnContextSelect -= OnContextSelect;
     }
 
     public void HideBox()
@@ -79,12 +81,21 @@ public class SelectionBox : ScreenElements
         foreach (var ele in inSelection)
         {
             ele.transform.SetParent(this.transform);
+            ele.StateOverride(ScreenElementState.Freeze);
         }
     }
 
     public void FlushBox()
     {
-        transform.DetachChildren();
+        if (insideTheBox.Length > 0 )
+        {
+            foreach (var ele in insideTheBox)
+            {
+                ele.StateOverride(ScreenElementState.Normal);
+            }
+            
+            transform.DetachChildren();
+        }
     }
 
     private void DeleteFilesInBox()
@@ -130,10 +141,10 @@ public class SelectionBox : ScreenElements
         {
             HideBox();
         }
-        else
-        {
-            // ถ้ามีไฟล์ลบไม่ได้เหลืออยู่ ให้วาดขอบกล่องใหม่ให้พอดีตัว
-            UpdateBoxBound(insideTheBox);
-        }
+    }
+
+    void OnContextSelect()
+    {
+        HideBox();
     }
 }
