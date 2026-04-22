@@ -23,11 +23,13 @@ public class SelectionBox : ScreenElements
     void OnEnable()
     {
         ActionCommands.OnDeleteCommand += DeleteFilesInBox;
+        ContextMenu.OnContextSelect += OnContextSelect;
     }
 
     void OnDisable()
     {
         ActionCommands.OnDeleteCommand -= DeleteFilesInBox;
+        ContextMenu.OnContextSelect -= OnContextSelect;
     }
 
     public void HideBox()
@@ -139,10 +141,10 @@ public class SelectionBox : ScreenElements
         {
             HideBox();
         }
-        else
-        {
-            // ถ้ามีไฟล์ลบไม่ได้เหลืออยู่ ให้วาดขอบกล่องใหม่ให้พอดีตัว
-            UpdateBoxBound(insideTheBox);
-        }
+    }
+
+    void OnContextSelect()
+    {
+        HideBox();
     }
 }

@@ -15,6 +15,8 @@ public class ContextMenu : MonoBehaviour
     private CoreFolder _targetCoreFolder;
     private BaseFile hoveredFile;
 
+    public static Action OnContextSelect;
+
     private void Start()
     {
         if (contextMenuPanel != null)
@@ -120,12 +122,14 @@ public class ContextMenu : MonoBehaviour
     public void OnClick_NewFileCommand()
     {
         ActionCommands.OnNewFileCommand?.Invoke();
+        OnContextSelect?.Invoke();
         CloseMenu();
     }
 
     public void OnClick_RefreshCommand()
     {
         ActionCommands.OnRefreshCommand?.Invoke();
+        OnContextSelect?.Invoke();
         CloseMenu();
     }
 
@@ -144,6 +148,7 @@ public class ContextMenu : MonoBehaviour
             }
         }
         ActionCommands.OnDeleteCommand?.Invoke();
+        OnContextSelect?.Invoke();
         CloseMenu();
     }
 

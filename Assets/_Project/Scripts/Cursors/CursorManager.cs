@@ -148,7 +148,41 @@ public class CursorManager : MonoBehaviour
 
     void RightClick(InputAction.CallbackContext ctx)
     {
-        print("right click");
+       if (IsPointerOverUI()) return;
+
+        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var found = Physics2D.OverlapCircle(mousePos, .1f);
+
+        mouseClickPos = mousePos;
+
+        //ClearConditionCheck();
+
+        if (found)
+        {
+            var scr_ele = found.GetComponent<ScreenElements>();
+
+            // if it find screen element
+            // add it to selection and start draging it
+            if (scr_ele)
+            {
+                if (scr_ele is not SelectionBox)
+                {
+                    ClearSelection();
+                }
+                AddSelection(scr_ele);
+
+                // store offset to each selected screen element
+                foreach (var ele in inSelection)
+                {
+                    ele.UpdateOffset(mouseClickPos);
+                }
+            }
+        }
+        // else clear
+        else
+        {
+            ClearSelection();
+        }
     }
 
     #endregion
