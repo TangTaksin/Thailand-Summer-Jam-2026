@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,8 +16,10 @@ public class ScreenMateStats : MonoBehaviour
 
     public float _invincibleTimer = 0f;
     public bool _isInvincible => _invincibleTimer > 0;
+    private bool _wasInvincible = false;
 
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
 
 
     private void Start()
@@ -26,8 +27,6 @@ public class ScreenMateStats : MonoBehaviour
         if (_cortisolSlider) _cortisolSlider.maxValue = _maxCortisol;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-
     }
 
     private void Update()
@@ -35,6 +34,7 @@ public class ScreenMateStats : MonoBehaviour
         if (_invincibleTimer > 0)
         {
             _invincibleTimer -= Time.deltaTime;
+            _invincibleTimer = Mathf.Max(0f, _invincibleTimer);
         }
 
         UpdateCortisol(_passiveIncreaseRate * Time.deltaTime);
@@ -44,12 +44,23 @@ public class ScreenMateStats : MonoBehaviour
             if (_isInvincible)
             {
                 spriteRenderer.color = Color.gold;
+
+                if (!_wasInvincible)
+                {
+                    Debug.Log("Invincible Mode! ON");
+                    _wasInvincible = true;
+                }
             }
             else
             {
                 spriteRenderer.color = Color.white;
-            }
 
+                if (_wasInvincible)
+                {
+                    Debug.Log("Invincible Mode! OFF");
+                    _wasInvincible = false;
+                }
+            }
         }
     }
 
@@ -76,11 +87,16 @@ public class ScreenMateStats : MonoBehaviour
 
     public void ActivateInvincibility(float duration)
     {
-        _invincibleTimer = duration;
+        _invincibleTimer = Mathf.Max(_invincibleTimer, duration);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        IStatModifier effect = other.GetComponent<IStatModifier>();
+        if (effect != null)
+        {
+            effect.ApplyModifier(this);
+        }
 
         BaseFile file = other.GetComponent<BaseFile>();
 
@@ -95,15 +111,9 @@ public class ScreenMateStats : MonoBehaviour
                     UpdateCortisol(-10f);
                     Debug.Log($"[Eat] กิน {file.gameObject.name} แล้ว! ลุ้น Core File...");
                 }
+
                 Destroy(file.gameObject);
-                return;
             }
-        }
-        
-        IStatModifier effect = other.GetComponent<IStatModifier>();
-        if (effect != null)
-        {
-            effect.ApplyModifier(this);
         }
     }
 
@@ -112,9 +122,13 @@ public class ScreenMateStats : MonoBehaviour
         _isGameOver = false;
         CurrentCortisol = 0f;
         _invincibleTimer = 0f;
+        _wasInvincible = false;
 
         if (_cortisolSlider != null)
             _cortisolSlider.value = 0f;
+
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
 
         Debug.Log("[ScreenMateStats] DEBUG: Cortisol reset to 0.");
     }
