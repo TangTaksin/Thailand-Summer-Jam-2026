@@ -171,12 +171,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c1e796273f2af478c83895b672d054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BinFolder
-  _requiredFiles: 10
+  _requiredFiles: 8
   _bounceDistanceX: 2.5
   _bounceHeight: 1.5
   _bounceDuration: 0.5
   _scatterX: {x: 1, y: 18}
   _scatterY: {x: -3, y: 1}
+  _badFilePrefab: {fileID: 7433041041010776109, guid: e611547377822344aa52c6057e23e8c7, type: 3}
+  _refreshesBeforeOverflow: 10
+  _overflowSpawnCount: 3
 --- !u!1 &7170940983723615229
 GameObject:
   m_ObjectHideFlags: 0

@@ -107,14 +107,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361f0cb9e277593429ea210243eeaf03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BadFile
-  minLoadSteps: 3
-  maxLoadSteps: 7
+  minLoadSteps: 0
+  maxLoadSteps: 0
   _loadedFileName: NewFile.exe
   fileNameTextMeshPro: {fileID: 4178320537522605917}
   curloadStepsTextMeshProUI: {fileID: 3221473847715395203}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 2485287998513396201, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  _hpRange: {x: 2, y: 5}
+  _hpRange: {x: 2, y: 4}
   _maxHp: 0
   _currentHp: 0
   _isStunned: 0

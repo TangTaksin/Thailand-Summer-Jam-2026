@@ -331,16 +331,16 @@ MonoBehaviour:
   curloadStepsTextMeshProUI: {fileID: 1484201875642924187}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 2485287998513396201, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  _hpRange: {x: 2, y: 5}
+  _hpRange: {x: 2, y: 3}
   _maxHp: 4
   _currentHp: 0
   _isStunned: 0
-  damage: 6
+  damage: 5
   _startRevealed: 0
   <MoveSpeed>k__BackingField: 2
   _bulletPrefab: {fileID: 7255865115189590923, guid: a66b1a56e209de74e88761b7d3477a6b, type: 3}
-  _projectileSpeed: 9
-  _fireRate: 1
+  _projectileSpeed: 8
+  _fireRate: 2
   _frequency: 0.4
   _amplitude: 1
 --- !u!1 &8168047652789648235

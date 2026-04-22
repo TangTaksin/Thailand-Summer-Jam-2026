@@ -143,13 +143,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ed4e3f051313a641b96021a0a47a55b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoodFile
-  maxloadSteps: 3
-  loadedFileName: GoodFile.exe
+  minLoadSteps: 2
+  maxLoadSteps: 4
+  _loadedFileName: NewFile.exe
   fileNameTextMeshPro: {fileID: 8129196055554522857}
   curloadStepsTextMeshProUI: {fileID: 3007545508111709788}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 3049987434418232518, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  spriteRenderer: {fileID: 3491849728564194403}
   healAmount: 15
 --- !u!1 &6443964800624887527
 GameObject:

@@ -324,8 +324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997a8615cc0e90940818ea3f7a8be502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FirewallFile
-  minLoadSteps: 3
-  maxLoadSteps: 8
+  minLoadSteps: 4
+  maxLoadSteps: 6
   _loadedFileName: FirewallFile.exe
   fileNameTextMeshPro: {fileID: 7602841123574778040}
   curloadStepsTextMeshProUI: {fileID: 3951530947559502115}

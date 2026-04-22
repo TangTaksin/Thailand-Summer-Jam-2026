@@ -143,8 +143,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 204b4fc33e62c5f4b9ba933df268de17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JunkFile
-  minLoadSteps: 3
-  maxLoadSteps: 7
+  minLoadSteps: 4
+  maxLoadSteps: 6
   _loadedFileName: NewFile.exe
   fileNameTextMeshPro: {fileID: 3939354997920605599}
   curloadStepsTextMeshProUI: {fileID: 4297672128700488923}
