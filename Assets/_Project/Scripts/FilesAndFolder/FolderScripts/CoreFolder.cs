@@ -20,9 +20,15 @@ public class CoreFolder : BaseFolder
 
     public int TargetCount => _targetCount;
     protected override bool CanAcceptFile(BaseFile file) => file is CoreFile;
+    private Vector3 _initialScale;
 
     void OnEnable() { ActionCommands.OnFormatCommand += ExecuteFormat; }
     void OnDisable() { ActionCommands.OnFormatCommand -= ExecuteFormat; }
+
+    void Awake()
+    {
+        _initialScale = transform.localScale;
+    }
 
     void Start()
     {
@@ -63,7 +69,7 @@ public class CoreFolder : BaseFolder
             Debug.Log("Ready to Format! Core files collected.");
 
             transform.DOKill();
-            transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
+            transform.DOScale(_initialScale * 1.1f, 0.3f).SetEase(Ease.OutBack);
             transform.DOShakeRotation(0.5f, new Vector3(0, 0, 5f), 15, 90, false)
                      .SetLoops(-1, LoopType.Restart);
         }
@@ -85,7 +91,7 @@ public class CoreFolder : BaseFolder
         transform.DOKill();
         _isReadyAnimationPlaying = false;
         transform.DOPunchPosition(Vector3.down * 0.5f, 0.4f, 10, 1);
-        transform.DOScale(1.0f, 0.3f).SetEase(Ease.OutBack);
+        transform.DOScale(_initialScale, 0.3f).SetEase(Ease.OutBack);
         transform.DORotate(Vector3.zero, 0.3f);
     }
 
