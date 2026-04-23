@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639125528496410307
+  platformSettingsDirtyTick: 639125688895370536
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -212,6 +212,48 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
+  - name: Context_Munu_UI_3
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 196
+      y: 4
+      width: 64
+      height: 64
+    spriteID: f43ddea5301444f499790de4b259e519
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Context_Munu_UI_4
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 260
+      y: 4
+      width: 64
+      height: 64
+    spriteID: 9b41e8330161780418d20a80f351094e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
   tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
@@ -232,7 +274,7 @@ ScriptedImporter:
       cellRect:
         x: 0
         y: 0
-        width: 192
+        width: 300
         height: 64
       spriteId: 3971f07cb7bc10a449b664661c300cef
     linkedCells: []
@@ -280,5 +322,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 192, y: 64}
-  previousTextureSize: {x: 256, y: 128}
+  canvasSize: {x: 320, y: 64}
+  previousTextureSize: {x: 512, y: 128}
