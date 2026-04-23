@@ -46,6 +46,7 @@ public class CoreFolder : BaseFolder
         {
             Debug.Log("[CoreFolder] File rejected: " + droppedFile.LoadedFileName);
             BounceFileWithTween(droppedFile);
+            AudioManager.Instance.PlaySFX("FolderReject");
         }
     }
 
@@ -62,6 +63,9 @@ public class CoreFolder : BaseFolder
         UpdateUI();
         Debug.Log($"[CoreFolder] Received: {file.gameObject.name} | Remaining: {_targetCount}");
         Destroy(file.gameObject);
+        AudioManager.Instance.PlaySFX("DropFile");
+
+
 
         if (_targetCount == 0 && !_isReadyAnimationPlaying)
         {

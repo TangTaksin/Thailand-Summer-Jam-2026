@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ScreenMateStats : MonoBehaviour
 {
-    public Slider _cortisolSlider;
+    public Slider[] _cortisolSliders;
     public float _maxCortisol = 100f;
 
     [Header("Passive Increase Settings")]
@@ -24,7 +24,21 @@ public class ScreenMateStats : MonoBehaviour
 
     private void Start()
     {
-        if (_cortisolSlider) _cortisolSlider.maxValue = _maxCortisol;
+        if (_cortisolSliders != null)
+        {
+            foreach (Slider slider in _cortisolSliders)
+            {
+                if (slider != null)
+                {
+                    slider.maxValue = _maxCortisol;
+                    slider.minValue = 0f;
+                    slider.value = 0f;
+
+                }
+
+            }
+
+        }
 
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -43,8 +57,6 @@ public class ScreenMateStats : MonoBehaviour
         {
             if (_isInvincible)
             {
-                spriteRenderer.color = Color.gold;
-
                 if (!_wasInvincible)
                 {
                     Debug.Log("Invincible Mode! ON");
@@ -75,12 +87,24 @@ public class ScreenMateStats : MonoBehaviour
 
         CurrentCortisol = Mathf.Clamp(CurrentCortisol + amount, 0, _maxCortisol);
 
-        if (_cortisolSlider) _cortisolSlider.value = CurrentCortisol;
+        if (_cortisolSliders != null)
+        {
+            foreach (Slider slider in _cortisolSliders)
+            {
+                if (slider != null)
+                {
+                    slider.value = CurrentCortisol;
+                }
+            }
+
+
+        }
 
         if (CurrentCortisol >= _maxCortisol)
         {
             _isGameOver = true;
             Debug.LogError("Game Over!");
+            AudioManager.Instance.PlaySFX("GameOver");
             ActionCommands.OnGameOver?.Invoke();
         }
     }
@@ -124,8 +148,13 @@ public class ScreenMateStats : MonoBehaviour
         _invincibleTimer = 0f;
         _wasInvincible = false;
 
-        if (_cortisolSlider != null)
-            _cortisolSlider.value = 0f;
+        if (_cortisolSliders != null)
+        {
+            foreach (Slider slider in _cortisolSliders)
+            {
+                if (slider != null) slider.value = 0f;
+            }
+        }
 
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;

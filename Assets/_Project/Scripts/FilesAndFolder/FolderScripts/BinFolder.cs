@@ -19,8 +19,8 @@ public class BinFolder : BaseFolder
 
     [Header("Refresh Overflow Settings")]
     [SerializeField] private GameObject _badFilePrefab;
-    [SerializeField] private int _refreshesBeforeOverflow = 5; //Refresh กี่ครั้ง
-    [SerializeField] private int _overflowSpawnCount = 3; //ออกมากี่ตัว
+    [SerializeField] private int _refreshesBeforeOverflow = 5;
+    [SerializeField] private int _overflowSpawnCount = 3;
     private int _currentRefreshCount = 0;
     private Vector3 _initialScale;
 
@@ -50,6 +50,7 @@ public class BinFolder : BaseFolder
 
     private void EmptyBin()
     {
+
         transform.DOKill();
         transform.DOPunchPosition(Vector3.down * 0.5f, 0.4f, 10, 1);
 
@@ -59,11 +60,21 @@ public class BinFolder : BaseFolder
         }
         _storedFiles.Clear();
 
+        _isFullAnimationPlaying = false;
+
         transform.DOScale(_initialScale, 0.3f).SetEase(Ease.OutBack);
         transform.DORotate(Vector3.zero, 0.3f);
 
         BaseFile[] allFiles = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude);
-        foreach (BaseFile file in allFiles) Destroy(file.gameObject);
+        foreach (BaseFile file in allFiles)
+        {
+            if (file.gameObject != this.gameObject)
+            {
+                Destroy(file.gameObject);
+            }
+        }
+
+        
     }
 
     public override void ReceiveFile(BaseFile droppedFile)
@@ -75,6 +86,7 @@ public class BinFolder : BaseFolder
         else
         {
             BounceFileWithTween(droppedFile);
+            AudioManager.Instance.PlaySFX("FolderReject");
         }
     }
 
@@ -98,6 +110,8 @@ public class BinFolder : BaseFolder
             junk.transform.SetParent(this.transform);
             junk.gameObject.SetActive(false);
             transform.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.2f, 10, 1);
+            AudioManager.Instance.PlaySFX("DropFile");
+
         }
 
         if (_storedFiles.Count >= _requiredFiles && !_isFullAnimationPlaying)

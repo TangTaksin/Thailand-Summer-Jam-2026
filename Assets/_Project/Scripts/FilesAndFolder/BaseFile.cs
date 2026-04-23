@@ -4,6 +4,9 @@ using UnityEngine;
 public class BaseFile : ScreenElements, IRefreshable, IDeletable
 {
     [Header("File Status")]
+    // 💡 1. เพิ่มตัวแปรสำหรับเปิด/ปิดการรับคำสั่ง Refresh
+    [SerializeField] protected bool ignoreRefreshCommand = false; 
+    
     [SerializeField] protected int minLoadSteps = 3;
     [SerializeField] protected int maxLoadSteps = 7;
 
@@ -57,6 +60,9 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
 
     public virtual void Refresh()
     {
+        // 💡 2. ดักไว้ตรงนี้ ถ้าตั้งค่าให้เมิน (true) ก็จะเด้งออกจากฟังก์ชันไปเลย ไม่ลดค่า Load Steps
+        if (ignoreRefreshCommand) return; 
+        
         ReduceloadSteps();
     }
 
@@ -164,6 +170,4 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
             }
         }
     }
-
-
 }

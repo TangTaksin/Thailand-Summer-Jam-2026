@@ -62,7 +62,19 @@ public class FileSpawner : MonoBehaviour
 
     private void HandleCoreFileDrop(BaseFile eatenFile)
     {
-        if (eatenFile is BadFile) return;
+        if (eatenFile is BadFile)
+        {
+            ShowMessage("*hiss*");
+            return;
+        }
+        else if (!string.IsNullOrEmpty(eatenFile.LoadedFileName) && eatenFile.LoadedFileName.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase))
+        {
+            ShowMessage("*nom*");
+        }
+        else
+        {
+            ShowMessage($"nom {eatenFile.LoadedFileName}!");
+        }
 
         _currentPityCounter++;
 
@@ -72,7 +84,8 @@ public class FileSpawner : MonoBehaviour
         if (isPityTriggered || roll <= _coreFileDropRate)
         {
             ResetPity();
-            ShowMessage("[Success] Core.exe successfully extracted.");
+
+            ShowMessage("NYA! Core File!");
             SpawnAtPosition(_coreFilePrefab, eatenFile.transform.position);
         }
         else
