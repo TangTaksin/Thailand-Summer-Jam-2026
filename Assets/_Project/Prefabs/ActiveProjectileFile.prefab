@@ -331,7 +331,7 @@ MonoBehaviour:
   curloadStepsTextMeshProUI: {fileID: 1484201875642924187}
   baseSprites: {fileID: 8787853512385072288, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
   revealedSprites: {fileID: 2485287998513396201, guid: 5baf63e902d971f4ea9bb1d781f202d1, type: 3}
-  _hpRange: {x: 2, y: 3}
+  _hpRange: {x: 2, y: 4}
   _maxHp: 4
   _currentHp: 0
   _isStunned: 0

@@ -324,8 +324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d88a65077a3a8b48b65bd0441d1b742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileFile
-  minLoadSteps: 3
-  maxLoadSteps: 5
+  minLoadSteps: 2
+  maxLoadSteps: 4
   _loadedFileName: NewFile.exe
   fileNameTextMeshPro: {fileID: 5619545070386972}
   curloadStepsTextMeshProUI: {fileID: 1484201875642924187}

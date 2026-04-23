@@ -984,9 +984,9 @@ MonoBehaviour:
   - {fileID: 864451905}
   emptyBinButton: {fileID: 1824041003}
   formatButton: {fileID: 855836394}
-  maxreFreshCount: 35
+  maxreFreshCount: 30
   refreshCharges: 0
-  bonusPerNewFile: 8
+  bonusPerNewFile: 6
   refreshChargesText: {fileID: 1301179777}
   textOffset: {x: 40, y: -40, z: 0}
 --- !u!1 &519420028
@@ -3430,8 +3430,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenMateStats
   _cortisolSlider: {fileID: 1628993680}
-  _maxCortisol: 200
-  _passiveIncreaseRate: 1
+  _maxCortisol: 100
+  _passiveIncreaseRate: 0.5
   _invincibleTimer: 0
   spriteRenderer: {fileID: 1553874459}
 --- !u!1 &1585253425
@@ -4961,11 +4961,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 360814261260051909, guid: 2270f3dbf314f32409e64fc6446aecb3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.9
+      value: -10.73
       objectReference: {fileID: 0}
     - target: {fileID: 360814261260051909, guid: 2270f3dbf314f32409e64fc6446aecb3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.44
+      value: 3.55
       objectReference: {fileID: 0}
     - target: {fileID: 360814261260051909, guid: 2270f3dbf314f32409e64fc6446aecb3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5007,6 +5007,14 @@ PrefabInstance:
       propertyPath: _badFilePrefab
       value: 
       objectReference: {fileID: 7433041041010776109, guid: e611547377822344aa52c6057e23e8c7, type: 3}
+    - target: {fileID: 5893859451004904358, guid: 2270f3dbf314f32409e64fc6446aecb3, type: 3}
+      propertyPath: _requiredFiles
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5893859451004904358, guid: 2270f3dbf314f32409e64fc6446aecb3, type: 3}
+      propertyPath: _overflowSpawnCount
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5025,15 +5033,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4995705158316124184, guid: 88753411ad661df4aa687846191e0145, type: 3}
       propertyPath: _targetCount
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5463310484341878910, guid: 88753411ad661df4aa687846191e0145, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.9
+      value: -10.73
       objectReference: {fileID: 0}
     - target: {fileID: 5463310484341878910, guid: 88753411ad661df4aa687846191e0145, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.7399998
+      value: 5.18
       objectReference: {fileID: 0}
     - target: {fileID: 5463310484341878910, guid: 88753411ad661df4aa687846191e0145, type: 3}
       propertyPath: m_LocalPosition.z
