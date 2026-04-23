@@ -4622,6 +4622,7 @@ MonoBehaviour:
   grabSprites:
   - {fileID: -7511864367031893041, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
   - {fileID: -7200107764607671945, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: -7511864367031893041, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
   - {fileID: 394217170084596244, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
   walkSprites:
   - {fileID: 3147216338404973664, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
@@ -4629,6 +4630,17 @@ MonoBehaviour:
   - {fileID: 4099350400623764521, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
   - {fileID: 6735652113031384664, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
   animFrameRate: 0.15
+  invincibleIdleSprite: {fileID: -5509999411772579009, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  invincibleGrabSprites:
+  - {fileID: 2132030797773873806, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: -4520922005475432156, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: 2132030797773873806, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: -570052869675272401, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  invincibleWalkSprites:
+  - {fileID: 7600339518188466735, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: -3002702510316318242, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: 8309402353048184828, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  - {fileID: -1801735910921461494, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
   _spriteRenderer: {fileID: 1553874459}
 --- !u!70 &1553874462
 CapsuleCollider2D:

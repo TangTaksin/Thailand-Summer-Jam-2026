@@ -43,8 +43,6 @@ public class ScreenMateStats : MonoBehaviour
         {
             if (_isInvincible)
             {
-                spriteRenderer.color = Color.gold;
-
                 if (!_wasInvincible)
                 {
                     Debug.Log("Invincible Mode! ON");

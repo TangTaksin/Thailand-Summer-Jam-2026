@@ -24,21 +24,30 @@ public class ScreenMateMovement : ScreenElements
     public float minIdleTime = 1f;
     public float maxIdleTime = 3f;
 
-    [Header("Animation Sprites")]
-    public Sprite idleSprite;           // ภาพตอนยืนเฉยๆ (1 frame)
-    public Sprite[] grabSprites;        // ภาพตอนโดนจับ (3 frames)
-    public Sprite[] walkSprites;        // ภาพตอนเดิน (4 frames)
-    public float animFrameRate = 0.15f; // ความเร็วในการเปลี่ยนเฟรม (วินาทีต่อเฟรม)
+    [Header("Animation Sprites (Normal)")]
+    public Sprite idleSprite;           // ภาพตอนยืนเฉยๆ ปกติ
+    public Sprite[] grabSprites;        // ภาพตอนโดนจับ ปกติ
+    public Sprite[] walkSprites;        // ภาพตอนเดิน ปกติ
+    public float animFrameRate = 0.15f; 
+
+    // 💡 เพิ่มชุดภาพสำหรับโหมดอมตะ
+    [Header("Animation Sprites (Invincible)")]
+    public Sprite invincibleIdleSprite;    // ภาพตอนยืนเฉยๆ โหมดอมตะ
+    public Sprite[] invincibleGrabSprites; // ภาพตอนโดนจับ โหมดอมตะ
+    public Sprite[] invincibleWalkSprites; // ภาพตอนเดิน โหมดอมตะ
 
     // ตัวแปรสำหรับคุม Animation
     private float _animTimer = 0f;
     private int _currentAnimFrame = 0;
-    private Sprite[] _currentAnimArray; // เก็บว่าตอนนี้กำลังเล่น Array ไหนอยู่
+    private Sprite[] _currentAnimArray; 
 
     private int movingDirection = 1;
     private float stateTimer = 0f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     private bool _isGameOver = false;
+
+    // 💡 ตัวแปรเชื่อมต่อไปยังสคริปต์ Stats เพื่อเช็คสถานะอมตะ
+    private ScreenMateStats _stats;
 
     public override bool IsGroupSelectable => false;
 
@@ -56,11 +65,14 @@ public class ScreenMateMovement : ScreenElements
     {
         base.Start();
         if (_spriteRenderer == null) _spriteRenderer = GetComponent<SpriteRenderer>();
+        
+        // 💡 ค้นหาสคริปต์ ScreenMateStats ที่อยู่ในตัวละครนี้
+        _stats = GetComponent<ScreenMateStats>(); 
+        
         rb2D.freezeRotation = true;
         SetWalkState();
     }
 
-    // อัปเดตฟิสิกส์และการเปลี่ยน State
     private void FixedUpdate()
     {
         if (_isGameOver) return;
@@ -93,39 +105,38 @@ public class ScreenMateMovement : ScreenElements
         }
     }
 
-    // 💡 อัปเดต Animation ภาพกราฟิกใน Update (ทำงานลื่นไหลกว่า FixedUpdate)
     private void Update()
     {
         if (_isGameOver) return;
 
-        // เช็คว่าโดนจับ/คลิกลากอยู่หรือเปล่า (สถานะไม่ใช่ Normal)
+        // 💡 เช็คว่าตอนนี้อยู่ในโหมดอมตะหรือไม่
+        bool isInvincible = (_stats != null && _stats._isInvincible);
+
         if (element_state != ScreenElementState.Normal)
         {
-            PlayAnimation(grabSprites); // เล่นอนิเมชันตอนโดนจับ
+            // ถ้าเป็นอมตะ ให้เล่นภาพ invincibleGrab ถ้าไม่ ให้เล่น grab ปกติ
+            PlayAnimation(isInvincible ? invincibleGrabSprites : grabSprites);
         }
         else
         {
-            // ถ้าไม่โดนจับ ก็เล่นอนิเมชันตาม State ปัจจุบัน
             switch (currentState)
             {
                 case MateState.Walk:
-                    PlayAnimation(walkSprites);
+                    PlayAnimation(isInvincible ? invincibleWalkSprites : walkSprites);
                     break;
                 case MateState.Idle:
                 case MateState.Falling:
-                    // โหมด Idle หรือ กำลังตก ให้ใช้ภาพเดียว
-                    SetSingleSprite(idleSprite);
+                    SetSingleSprite(isInvincible ? invincibleIdleSprite : idleSprite);
                     break;
             }
         }
     }
 
-    // 💡 ฟังก์ชันจัดการแอนิเมชันแบบสลับภาพ
     private void PlayAnimation(Sprite[] animArray)
     {
+        // 💡 ป้องกัน Error ถ้าลืมใส่ภาพใน Inspector
         if (animArray == null || animArray.Length == 0) return;
 
-        // ถ้าเปลี่ยนท่าทาง ให้รีเซ็ตเฟรมกลับไปที่ 0
         if (_currentAnimArray != animArray)
         {
             _currentAnimArray = animArray;
@@ -135,14 +146,12 @@ public class ScreenMateMovement : ScreenElements
             return;
         }
 
-        // จับเวลาเพื่อเปลี่ยนภาพ
         _animTimer += Time.deltaTime;
         if (_animTimer >= animFrameRate)
         {
             _animTimer = 0f;
             _currentAnimFrame++;
 
-            // วนลูปกลับไปภาพแรกถ้าเล่นจบ Array
             if (_currentAnimFrame >= animArray.Length)
             {
                 _currentAnimFrame = 0;
@@ -152,12 +161,10 @@ public class ScreenMateMovement : ScreenElements
         }
     }
 
-    // 💡 ฟังก์ชันสำหรับตั้งภาพนิ่ง (1 เฟรม)
     private void SetSingleSprite(Sprite singleSprite)
     {
         if (singleSprite == null) return;
         
-        // เคลียร์ค่า Array เพื่อให้เวลาสลับกลับไปเดิน/โดนจับ มันจะได้เริ่มเฟรม 0 ใหม่
         _currentAnimArray = null; 
         _spriteRenderer.sprite = singleSprite;
     }
@@ -216,7 +223,11 @@ public class ScreenMateMovement : ScreenElements
         _isGameOver = true;
         rb2D.linearVelocity = Vector2.zero;
         currentState = MateState.Idle;
-        SetSingleSprite(idleSprite); // ให้มันยืนนิ่งๆ ตอน Game Over
+        
+        // 💡 เช็คสถานะตอนตายด้วยว่าเป็นอมตะอยู่หรือเปล่า
+        bool isInvincible = (_stats != null && _stats._isInvincible);
+        SetSingleSprite(isInvincible ? invincibleIdleSprite : idleSprite); 
+        
         Debug.Log("[ScreenMateMovement] Game Over — Movement stopped.");
     }
 }
