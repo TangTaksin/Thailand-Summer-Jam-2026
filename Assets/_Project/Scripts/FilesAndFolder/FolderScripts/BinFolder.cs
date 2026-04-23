@@ -19,8 +19,8 @@ public class BinFolder : BaseFolder
 
     [Header("Refresh Overflow Settings")]
     [SerializeField] private GameObject _badFilePrefab;
-    [SerializeField] private int _refreshesBeforeOverflow = 5; //Refresh กี่ครั้ง
-    [SerializeField] private int _overflowSpawnCount = 3; //ออกมากี่ตัว
+    [SerializeField] private int _refreshesBeforeOverflow = 5;
+    [SerializeField] private int _overflowSpawnCount = 3;
     private int _currentRefreshCount = 0;
     private Vector3 _initialScale;
 
