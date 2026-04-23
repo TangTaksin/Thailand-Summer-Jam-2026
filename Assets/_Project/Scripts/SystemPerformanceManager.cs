@@ -5,14 +5,11 @@ public class SystemPerformanceManager : MonoBehaviour
     [Header("Performance Limits")]
     [SerializeField] private int _safeFileCount = 10;
     [SerializeField] private int _maxFileCount = 40;
-    
-    [Header("FPS Settings")]
-    [SerializeField] private int _maxFPS = 360;
+
     [SerializeField] private int _minFPS = 30;
 
     private void Start()
     {
-        QualitySettings.vSyncCount = 0; 
         UpdateSystemPerformance();
     }
 
@@ -21,6 +18,7 @@ public class SystemPerformanceManager : MonoBehaviour
         ActionCommands.OnNewFileCommand += UpdateSystemPerformance;
         ActionCommands.OnDeleteCommand += UpdateSystemPerformance;
         ActionCommands.OnFormatCommand += UpdateSystemPerformance;
+        ActionCommands.OnRefreshCommand += UpdateSystemPerformance;
     }
 
     private void OnDisable()
@@ -28,6 +26,7 @@ public class SystemPerformanceManager : MonoBehaviour
         ActionCommands.OnNewFileCommand -= UpdateSystemPerformance;
         ActionCommands.OnDeleteCommand -= UpdateSystemPerformance;
         ActionCommands.OnFormatCommand -= UpdateSystemPerformance;
+        ActionCommands.OnRefreshCommand -= UpdateSystemPerformance;
     }
 
     private void UpdateSystemPerformance()
@@ -36,20 +35,18 @@ public class SystemPerformanceManager : MonoBehaviour
 
         if (currentFiles <= _safeFileCount)
         {
-            Application.targetFrameRate = _maxFPS;
-        }
-        else if (currentFiles >= _maxFileCount)
-        {
-            Application.targetFrameRate = _minFPS;
+            QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = -1;
         }
         else
         {
-            float t = (float)(currentFiles - _safeFileCount) / (_maxFileCount - _safeFileCount);
-            int targetFPS = Mathf.RoundToInt(Mathf.Lerp(_maxFPS, _minFPS, t));
-            
-            Application.targetFrameRate = targetFPS;
-        }
+            QualitySettings.vSyncCount = 0;
+            float t = Mathf.Clamp01((float)(currentFiles - _safeFileCount) / (_maxFileCount - _safeFileCount));
+            int targetFPS = Mathf.RoundToInt(Mathf.Lerp(60, _minFPS, t));
 
-        Debug.Log($"[Performance] Files: {currentFiles} | Target FPS: {Application.targetFrameRate}");
+            Application.targetFrameRate = targetFPS;
+            Debug.Log($"[WebGL Performance] Throttling to {targetFPS} FPS | Files: {currentFiles}");
+        }
     }
+
 }
