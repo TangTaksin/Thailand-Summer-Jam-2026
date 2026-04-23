@@ -22,6 +22,7 @@ public class BinFolder : BaseFolder
     [SerializeField] private int _refreshesBeforeOverflow = 5; //Refresh กี่ครั้ง
     [SerializeField] private int _overflowSpawnCount = 3; //ออกมากี่ตัว
     private int _currentRefreshCount = 0;
+    private Vector3 _initialScale;
 
     private readonly string[] _junkExtensions = { ".junk", ".trash", ".del", ".tmp" };
 
@@ -29,6 +30,11 @@ public class BinFolder : BaseFolder
     public int StoredFileCount => _storedFiles.Count;
     public bool CanEmpty => _storedFiles.Count >= _requiredFiles;
     private bool _isFullAnimationPlaying = false;
+
+    void Awake()
+    {
+        _initialScale = transform.localScale;
+    }
 
     void OnEnable()
     {
@@ -53,7 +59,7 @@ public class BinFolder : BaseFolder
         }
         _storedFiles.Clear();
 
-        transform.DOScale(1.0f, 0.3f).SetEase(Ease.OutBack);
+        transform.DOScale(_initialScale, 0.3f).SetEase(Ease.OutBack);
         transform.DORotate(Vector3.zero, 0.3f);
 
         BaseFile[] allFiles = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude);
@@ -99,7 +105,7 @@ public class BinFolder : BaseFolder
             _isFullAnimationPlaying = true;
             Debug.Log("Bin is full!");
             transform.DOKill();
-            transform.DOScale(1.2f, 0.3f).SetEase(Ease.OutBack);
+            transform.DOScale(_initialScale * 1.2f, 0.3f).SetEase(Ease.OutBack);
             transform.DOShakeRotation(0.5f, new Vector3(0, 0, 5f), 15, 90, false)
                      .SetLoops(-1, LoopType.Restart);
         }

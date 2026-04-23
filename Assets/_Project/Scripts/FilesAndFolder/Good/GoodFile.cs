@@ -13,4 +13,13 @@ public class GoodFile : BaseFile, IStatModifier
         }
 
     }
+
+    protected override void LoadFile()
+    {
+        base.LoadFile();
+        if (CurLoadSteps == 0 && curloadStepsTextMeshProUI != null)
+        {
+            curloadStepsTextMeshProUI.text = "+HEAL";
+        }
+    }
 }

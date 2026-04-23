@@ -13,4 +13,15 @@ public class FirewallFile : BaseFile, IStatModifier
             Destroy(gameObject);
         }
     }
+
+    protected override void LoadFile()
+    {
+        base.LoadFile();
+        if (CurLoadSteps == 0 && curloadStepsTextMeshProUI != null)
+        {
+            curloadStepsTextMeshProUI.text = "SHIELD";
+        }
+    }
+
 }
+

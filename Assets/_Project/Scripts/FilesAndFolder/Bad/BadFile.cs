@@ -40,7 +40,7 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     private void Update()
     {
         if (element_state != ScreenElementState.Normal) return;
-        
+
         bool canMove = CurLoadSteps == 0 && !_isStunned && _targetScreenMate != null;
 
         if (canMove)
@@ -147,11 +147,20 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     {
         UpdateSpriteAndFileName();
         UpdateStatusText();
+        if (CurLoadSteps == 0 && _currentHp == 0)
+        {
+            curloadStepsTextMeshProUI.text = "Del";
+        }
     }
 
     private void UpdateSpriteAndFileName()
     {
         bool isLoadingOrStunned = CurLoadSteps > 0 || _isStunned;
+
+        if (_animator != null)
+        {
+            _animator.enabled = !isLoadingOrStunned;
+        }
 
         if (isLoadingOrStunned)
         {

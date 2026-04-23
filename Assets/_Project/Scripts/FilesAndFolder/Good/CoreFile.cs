@@ -24,4 +24,14 @@ public class CoreFile : BaseFile
             _loadedFileName = cleanName + ext;
         }
     }
+
+    protected override void LoadFile()
+    {
+        base.LoadFile();
+        if (CurLoadSteps == 0 && curloadStepsTextMeshProUI != null)
+        {
+            curloadStepsTextMeshProUI.text = "CORE";
+        }
+    }
+
 }
