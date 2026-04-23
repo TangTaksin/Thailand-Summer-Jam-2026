@@ -5,80 +5,51 @@ public class SystemPerformanceManager : MonoBehaviour
     [Header("Performance Limits")]
     [SerializeField] private int _safeFileCount = 10;
     [SerializeField] private int _maxFileCount = 40;
-
+    
     [Header("FPS Settings")]
     [SerializeField] private int _maxFPS = 360;
     [SerializeField] private int _minFPS = 30;
 
-    private int _currentFileCount;
-
-    // ─── Lifecycle ────────────────────────────────────────────────────────────
-
     private void Start()
     {
-        QualitySettings.vSyncCount = 0;
-        _currentFileCount = FindObjectsByType<BaseFile>().Length;
-        ApplyTargetFPS();
+        QualitySettings.vSyncCount = 0; 
+        UpdateSystemPerformance();
     }
 
     private void OnEnable()
     {
-        ActionCommands.OnNewFileCommand += OnFileAdded;
-        ActionCommands.OnDeleteCommand += OnFileRemoved;
-        ActionCommands.OnFormatCommand += OnFileChanged;
+        ActionCommands.OnNewFileCommand += UpdateSystemPerformance;
+        ActionCommands.OnDeleteCommand += UpdateSystemPerformance;
+        ActionCommands.OnFormatCommand += UpdateSystemPerformance;
     }
 
     private void OnDisable()
     {
-        ActionCommands.OnNewFileCommand -= OnFileAdded;
-        ActionCommands.OnDeleteCommand -= OnFileRemoved;
-        ActionCommands.OnFormatCommand -= OnFileChanged;
+        ActionCommands.OnNewFileCommand -= UpdateSystemPerformance;
+        ActionCommands.OnDeleteCommand -= UpdateSystemPerformance;
+        ActionCommands.OnFormatCommand -= UpdateSystemPerformance;
     }
 
-    // ─── Event Handlers ───────────────────────────────────────────────────────
-
-    private void OnFileAdded()
+    private void UpdateSystemPerformance()
     {
-        _currentFileCount++;
-        ApplyTargetFPS();
-    }
+        int currentFiles = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude).Length;
 
-    private void OnFileRemoved()
-    {
-        _currentFileCount = Mathf.Max(0, _currentFileCount - 1);
-        ApplyTargetFPS();
-    }
-
-    private void OnFileChanged()
-    {
-        _currentFileCount = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude).Length;
-        ApplyTargetFPS();
-    }
-
-    // ─── Core Logic ───────────────────────────────────────────────────────────
-
-    private void ApplyTargetFPS()
-    {
-        int targetFPS;
-
-        if (_currentFileCount <= _safeFileCount)
+        if (currentFiles <= _safeFileCount)
         {
-            targetFPS = _maxFPS;
+            Application.targetFrameRate = _maxFPS;
         }
-        else if (_currentFileCount >= _maxFileCount)
+        else if (currentFiles >= _maxFileCount)
         {
-            targetFPS = _minFPS;
+            Application.targetFrameRate = _minFPS;
         }
         else
         {
-            float t = (float)(_currentFileCount - _safeFileCount)
-                            / (_maxFileCount - _safeFileCount);
-
-            targetFPS = Mathf.RoundToInt(Mathf.Lerp(_maxFPS, _minFPS, t));
+            float t = (float)(currentFiles - _safeFileCount) / (_maxFileCount - _safeFileCount);
+            int targetFPS = Mathf.RoundToInt(Mathf.Lerp(_maxFPS, _minFPS, t));
+            
+            Application.targetFrameRate = targetFPS;
         }
 
-        Application.targetFrameRate = targetFPS;
-
-        Debug.Log($"[Performance] Files: {_currentFileCount} | Target FPS: {targetFPS}");
+        Debug.Log($"[Performance] Files: {currentFiles} | Target FPS: {Application.targetFrameRate}");
     }
 }

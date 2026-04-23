@@ -142,13 +142,11 @@ public class ContextMenu : MonoBehaviour
                     newFileImage.DOKill();
                     defaultMenuOptions[0].transform.DOKill();
 
+                    defaultMenuOptions[0].transform.localScale = Vector3.one;
+
                     if (refreshCharges <= 0)
                     {
                         newFileImage.color = Color.white;
-                        newFileImage.DOColor(new Color(1f, 1f, 0.5f), 0.5f)
-                                    .SetLoops(-1, LoopType.Yoyo)
-                                    .SetUpdate(true);
-
                         defaultMenuOptions[0].transform.DOScale(1.05f, 0.5f)
                                     .SetLoops(-1, LoopType.Yoyo)
                                     .SetUpdate(true);
@@ -156,7 +154,6 @@ public class ContextMenu : MonoBehaviour
                     else
                     {
                         newFileImage.color = Color.white;
-                        defaultMenuOptions[0].transform.localScale = Vector3.one;
                     }
                 }
             }
