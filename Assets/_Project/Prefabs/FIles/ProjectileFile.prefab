@@ -418,7 +418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileFile
   minLoadSteps: 2
   maxLoadSteps: 4
-  _loadedFileName: NewFile.exe
+  _loadedFileName: HappySun.exe
   fileNameTextMeshPro: {fileID: 5619545070386972}
   curloadStepsTextMeshProUI: {fileID: 2619179210417543512}
   baseSprites: {fileID: -2062350606603630589, guid: 1a864b146020fed4cb064a6294a8a1b6, type: 3}
