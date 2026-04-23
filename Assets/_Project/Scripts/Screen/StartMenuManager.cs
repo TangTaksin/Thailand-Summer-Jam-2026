@@ -17,10 +17,11 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
     [SerializeField] Image backgroundImage;
     [SerializeField] GameObject scrollGroupObject;
-     
+
 
 
     bool is_Draging;
+    bool isLoadingScene;
     float drag_progress;
     [SerializeField] bool thresholdCrossed;
 
@@ -29,6 +30,7 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
     void Awake()
     {
+        Time.timeScale = 1;
         main_cam = Camera.main;
 
         scroll_origin_position = scrollGroupObject.transform.position;
@@ -41,7 +43,7 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
     void TimeUpdate()
     {
-        
+
         var now = DateTime.Now;
         var timeText = string.Format("{0:t}", now);
         var dateText = string.Format("{0:d}", now);
@@ -59,6 +61,11 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (isLoadingScene)
+        {
+            return;
+        }
+
         is_Draging = false;
 
         if (!thresholdCrossed)
@@ -94,7 +101,7 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
         if (is_Draging)
         {
-            scrollGroupObject.transform.position = new Vector2(scrollGroupObject.transform.position.x , OffsetedPos.y);
+            scrollGroupObject.transform.position = new Vector2(scrollGroupObject.transform.position.x, OffsetedPos.y);
         }
     }
 
@@ -102,6 +109,7 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
     void EnterGameplay()
     {
+        isLoadingScene = true;
         var veiwToScreen = main_cam.ViewportToScreenPoint(Vector3.up * 1.5f);
         scrollGroupObject.transform.DOMoveY(veiwToScreen.y, 1f).SetEase(Ease.OutExpo);
         SceneManager.LoadSceneAsync("Gameplay", LoadSceneMode.Additive);
@@ -112,17 +120,20 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
     private void OnGameplayLoaded(Scene scene, LoadSceneMode loadmode)
     {
         SceneManager.sceneLoaded -= OnGameplayLoaded;
-        
+
         if (scene.name == "Gameplay")
         {
-            backgroundImage.DOFade(0,1f).SetEase(Ease.InExpo).onComplete = UnloadStartScene;
+            backgroundImage.DOFade(0, 1f).SetEase(Ease.InExpo).onComplete = UnloadStartScene;
         }
     }
 
     void UnloadStartScene()
     {
+        Debug.Log("Unloading Start Menu Scene ");
+        scrollGroupObject.transform.DOKill();
+        backgroundImage.DOKill();
         SceneManager.UnloadSceneAsync("StartMenu");
-    } 
+    }
 
     #endregion
 }
