@@ -32,6 +32,20 @@ public class SelectionBox : ScreenElements
         ContextMenu.OnContextSelect -= OnContextSelect;
     }
 
+    void Update()
+    {
+        // จะทำงาน (ล็อกเป้า) ก็ต่อเมื่อมีไฟล์อยู่ข้างในกล่องเท่านั้น
+        if (insideTheBox != null && insideTheBox.Length > 0)
+        {
+            // 💡 คำนวณขอบเขต Padding จากขนาดครึ่งหนึ่งของ Collider กล่อง
+            // เพื่อให้ขอบกล่อง (ไม่ใช่แค่จุดกึ่งกลาง) ชนขอบจอพอดี
+            Vector2 padding = new Vector2(boxCollider2D.size.x / 2f, boxCollider2D.size.y / 2f);
+
+            // เรียกใช้ยันต์กันหลุดจอของเรา!
+            transform.position = ScreenBoundary.ClampToScreen(transform.position, padding);
+        }
+    }
+
     public void HideBox()
     {
         FlushBox();
@@ -87,14 +101,21 @@ public class SelectionBox : ScreenElements
 
     public void FlushBox()
     {
-        if (insideTheBox.Length > 0 )
+        if (insideTheBox != null && insideTheBox.Length > 0)
         {
             foreach (var ele in insideTheBox)
             {
-                ele.StateOverride(ScreenElementState.Normal);
+                // 💡 ใส่กันเหนียว เผื่อไฟล์โดนลบไปแล้วระหว่างอยู่ในกล่อง
+                if (ele != null)
+                {
+                    ele.StateOverride(ScreenElementState.Normal);
+                }
             }
-            
+
             transform.DetachChildren();
+
+            // 💡 สำคัญมาก! ต้องรีเซ็ต Array ให้ว่างเปล่า กล่องจะได้รู้ว่าตัวเองว่างแล้ว
+            insideTheBox = new ScreenElements[0];
         }
     }
 
