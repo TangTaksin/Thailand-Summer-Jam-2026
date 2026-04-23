@@ -180,12 +180,26 @@ MonoBehaviour:
   sfxSource: {fileID: 7799966030440228392}
   defaultMusicClip: {fileID: 8300000, guid: b23aeedcd48f53c4b8379fa9ab647d4f, type: 3}
   minPitch: 0.8
-  maxPitch: 1.2
+  maxPitch: 1.1
   fadeOutDuration: 0.5
   fadeInDuration: 0.5
   sfxLibrary:
   - name: Click
-    clip: {fileID: 8300000, guid: 2e4b6ff3b43bf8049a08babb92a1fa7d, type: 3}
+    clip: {fileID: 8300000, guid: 8b69ed31e08864d40867e670bffeb748, type: 3}
+  - name: Delete
+    clip: {fileID: 8300000, guid: 4ac40efba6ba94d4f9f344fd3b44f1a3, type: 3}
+  - name: GameOver
+    clip: {fileID: 8300000, guid: d15dbb9719783d944b765477546da81a, type: 3}
+  - name: EmptyBin
+    clip: {fileID: 8300000, guid: 4ac40efba6ba94d4f9f344fd3b44f1a3, type: 3}
+  - name: FolderReject
+    clip: {fileID: 8300000, guid: 9797b1e1c53fc4b44a103e7be07a0d42, type: 3}
+  - name: Refresh
+    clip: {fileID: 8300000, guid: 255afba5f17a8484ebbe055022b8cdd3, type: 3}
+  - name: CantDelete
+    clip: {fileID: 8300000, guid: c37a9b6b93421f04bb70d867e52111ba, type: 3}
+  - name: DropFile
+    clip: {fileID: 8300000, guid: 2c5a6265a4f817942879baf8999251f7, type: 3}
 --- !u!1 &8378100414635023576
 GameObject:
   m_ObjectHideFlags: 0

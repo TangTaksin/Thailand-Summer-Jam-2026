@@ -13,17 +13,23 @@ public class SettingsManager : MonoBehaviour
 
     [Header("UI Settings")]
     [SerializeField] private GameObject settingsPanel;
-    [SerializeField] private float animationDuration = 0.5f; // 💡 ปรับเวลาตรงนี้ที่เดียวได้เลย
+    [SerializeField] private float animationDuration = 0.5f;
 
     private Animator animator;
     private bool isPanelOpen = false;
-    private bool isTransitioning = false; // 💡 ตัวแปรป้องกันการกดรัว (Spam Filter)
+    private bool isTransitioning = false;
 
     private void Awake()
     {
         if (settingsPanel != null)
         {
             animator = settingsPanel.GetComponent<Animator>();
+            
+            if (animator != null)
+            {
+                animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+            }
+            
             settingsPanel.SetActive(false);
         }
     }
@@ -79,7 +85,6 @@ public class SettingsManager : MonoBehaviour
 
     public void ToggleSettingsPanel()
     {
-        // 💡 ถ้ากำลังเล่นแอนิเมชันเปิด/ปิดอยู่ ให้เมินการกดปุ่มนี้ไปเลย
         if (isTransitioning) return; 
 
         if (isPanelOpen)
@@ -91,13 +96,15 @@ public class SettingsManager : MonoBehaviour
     public void OpenSettingsPanel()
     {
         if (settingsPanel == null) return;
+        
         settingsPanel.SetActive(true);
+        Time.timeScale = 0f;
         
         if (animator != null)
         {
             animator.enabled = true;
             animator.Play("Open_setting_UI_anim");
-            StartCoroutine(WaitAnimationFinish()); // 💡 ล็อคการกดจนกว่าจะเปิดสุด
+            StartCoroutine(WaitAnimationFinish());
         }
         isPanelOpen = true;
     }
@@ -107,39 +114,40 @@ public class SettingsManager : MonoBehaviour
         if (animator != null)
         {
             animator.Play("Close_Setting_ui_anim");
-            StartCoroutine(DeactivatePanelAfterAnimation()); // 💡 ล็อคการกดจนกว่าจะปิดสุด
+            StartCoroutine(DeactivatePanelAfterAnimation());
         }
         else
         {
             settingsPanel.SetActive(false);
             isPanelOpen = false;
+            Time.timeScale = 1f;
         }
     }
 
-    // 💡 Coroutine สำหรับปลดล็อคตอน "เปิด" เสร็จ
     private IEnumerator WaitAnimationFinish()
     {
-        isTransitioning = true; // ล็อค
+        isTransitioning = true;
         yield return new WaitForSecondsRealtime(animationDuration);
-        isTransitioning = false; // ปลดล็อค
+        isTransitioning = false;
     }
 
-    // 💡 Coroutine สำหรับปลดล็อคตอน "ปิด" เสร็จ
     private IEnumerator DeactivatePanelAfterAnimation()
     {
-        isTransitioning = true; // ล็อค
+        isTransitioning = true;
         yield return new WaitForSecondsRealtime(animationDuration);
         
         settingsPanel.SetActive(false);
         isPanelOpen = false;
-        isTransitioning = false; // ปลดล็อค
+        isTransitioning = false;
+        
+        Time.timeScale = 1f; 
     }
 
     // ─── Button Actions ───
 
     public void Resume()
     {
-        if (isTransitioning) return; // 💡 กันคนกดปุ่ม Resume รัวๆ
+        if (isTransitioning) return;
         CloseSettingsPanel();
     }
 
