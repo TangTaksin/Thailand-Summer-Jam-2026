@@ -180,6 +180,7 @@ public class ContextMenu : MonoBehaviour
         ActionCommands.OnNewFileCommand?.Invoke();
         OnContextSelect?.Invoke();
         CloseMenu();
+        AudioManager.Instance.PlaySFX("Click");
     }
 
     public void OnClick_RefreshCommand()
@@ -190,6 +191,7 @@ public class ContextMenu : MonoBehaviour
             ActionCommands.OnRefreshCommand?.Invoke();
             OnContextSelect?.Invoke();
             CloseMenu();
+            AudioManager.Instance.PlaySFX("Refresh");
         }
     }
 
@@ -200,12 +202,15 @@ public class ContextMenu : MonoBehaviour
             if (hoveredFile.CanDelete(out string message))
             {
                 hoveredFile.Delete();
+                AudioManager.Instance.PlaySFX("Delete");
             }
             else
             {
                 Debug.Log(message);
+                AudioManager.Instance.PlaySFX("CantDelete");
             }
         }
+
         ActionCommands.OnDeleteCommand?.Invoke();
         OnContextSelect?.Invoke();
         CloseMenu();
@@ -217,6 +222,7 @@ public class ContextMenu : MonoBehaviour
         {
             ActionCommands.OnEmptyBinCommand?.Invoke();
             CloseMenu();
+            AudioManager.Instance.PlaySFX("EmptyBin");
         }
     }
 

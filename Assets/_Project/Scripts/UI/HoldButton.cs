@@ -18,6 +18,8 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
     private bool _isAlreadyFired = false;
     private float _holdTimer = 0f;
     private Button _button;
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource _holdAudioSource;
 
     private void Start()
     {
@@ -32,37 +34,49 @@ public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
         if (_isHolding && _button.interactable && !_isAlreadyFired)
         {
             _holdTimer += Time.deltaTime;
+            float progress = _holdTimer / holdDuration;
+
             if (progressImage != null)
             {
-                progressImage.fillAmount = _holdTimer / holdDuration;
+                progressImage.fillAmount = progress;
+            }
+
+            if (_holdAudioSource != null && _holdAudioSource.isPlaying)
+            {
+                _holdAudioSource.pitch = Mathf.Lerp(1.0f, 2.0f, progress);
             }
 
             if (_holdTimer >= holdDuration)
             {
-                CompleteHold();
+                if (_holdAudioSource != null) _holdAudioSource.Stop();
+                AudioManager.Instance.PlaySFX("Complete");
+                onHoldComplete?.Invoke();
             }
         }
-    }
-
-    private void CompleteHold()
-    {
-        _isHolding = false;
-        _isAlreadyFired = true;
-        _button.interactable = false;
-
-        onHoldComplete?.Invoke();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (!_button.interactable || _isAlreadyFired) return;
         _isHolding = true;
+
+        if (_holdAudioSource != null)
+        {
+            _holdAudioSource.pitch = 1.0f;
+            _holdAudioSource.Play();
+        }
         _holdTimer = 0f;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (_isAlreadyFired) return;
+        _isHolding = false;
+
+        if (_holdAudioSource != null && !_isAlreadyFired)
+        {
+            _holdAudioSource.Stop();
+        }
         ResetProgress();
     }
 

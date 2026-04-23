@@ -43,8 +43,6 @@ public class ScreenMateStats : MonoBehaviour
         {
             if (_isInvincible)
             {
-                spriteRenderer.color = Color.gold;
-
                 if (!_wasInvincible)
                 {
                     Debug.Log("Invincible Mode! ON");
@@ -81,6 +79,7 @@ public class ScreenMateStats : MonoBehaviour
         {
             _isGameOver = true;
             Debug.LogError("Game Over!");
+            AudioManager.Instance.PlaySFX("GameOver");
             ActionCommands.OnGameOver?.Invoke();
         }
     }

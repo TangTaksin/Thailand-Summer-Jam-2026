@@ -145,7 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GoodFile
   minLoadSteps: 2
   maxLoadSteps: 4
-  _loadedFileName: NewFile.exe
+  _loadedFileName: BeachParasol.exe
   fileNameTextMeshPro: {fileID: 8129196055554522857}
   curloadStepsTextMeshProUI: {fileID: 2487467195748048112}
   baseSprites: {fileID: -2062350606603630589, guid: 1a864b146020fed4cb064a6294a8a1b6, type: 3}
