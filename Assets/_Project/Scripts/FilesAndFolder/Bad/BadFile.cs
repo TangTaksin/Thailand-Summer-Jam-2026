@@ -17,28 +17,20 @@ public class BadFile : BaseFile, IStatModifier, IMovable
 
     [Header("Movement Settings")]
     [field: SerializeField] public float MoveSpeed { get; set; } = 2f;
-    private Animator _animator;
 
     protected Transform _targetScreenMate;
 
     protected override void Start()
     {
-        _animator = GetComponent<Animator>();
         base.Start();
         _maxHp = Random.Range(_hpRange.x, _hpRange.y + 1);
         InitializeHp();
         FindScreenMateTarget();
 
-        if (_animator != null)
-        {
-            _animator.enabled = false;
-        }
-
         if (_startRevealed)
         {
             CurLoadSteps = 0;
             InitializeHp();
-            if (_animator != null) _animator.enabled = true;
         }
 
         LoadFile();
@@ -114,11 +106,6 @@ public class BadFile : BaseFile, IStatModifier, IMovable
             CurLoadSteps = 0;
             InitializeHp();
             _isStunned = false;
-
-            if (_animator != null)
-            {
-                _animator.enabled = true;
-            }
             Debug.Log($"[BadFile] {gameObject.name} โหลดเสร็จแล้ว — พร้อมเคลื่อนที่");
         }
     }
@@ -146,7 +133,6 @@ public class BadFile : BaseFile, IStatModifier, IMovable
             _currentHp = 0;
             _isStunned = true;
             Debug.Log($"[BadFile] {gameObject.name} ถูกทำลาย — เข้าสู่สถานะ Stunned");
-            if (_animator != null) _animator.enabled = false;
         }
     }
 
@@ -154,7 +140,6 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     {
         _currentHp = _maxHp;
         _isStunned = false;
-        if (_animator != null) _animator.enabled = true;
         Debug.Log($"[BadFile] {gameObject.name} ฟื้นฟูแล้ว — กลับมา HP เต็ม");
     }
 
@@ -162,11 +147,21 @@ public class BadFile : BaseFile, IStatModifier, IMovable
     {
         UpdateSpriteAndFileName();
         UpdateStatusText();
+        if (CurLoadSteps == 0 && _currentHp == 0)
+        {
+            curloadStepsTextMeshProUI.text = "Del";
+            curloadStepsTextMeshProUI.color = Color.red;
+        }
     }
 
     private void UpdateSpriteAndFileName()
     {
         bool isLoadingOrStunned = CurLoadSteps > 0 || _isStunned;
+
+        if (_animator != null)
+        {
+            _animator.enabled = !isLoadingOrStunned;
+        }
 
         if (isLoadingOrStunned)
         {

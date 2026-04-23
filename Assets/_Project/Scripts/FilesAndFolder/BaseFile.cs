@@ -27,6 +27,7 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
     [SerializeField] protected Sprite baseSprites;
     [SerializeField] protected Sprite revealedSprites;
     protected SpriteRenderer spriteRenderer;
+    protected Animator _animator;
 
     private Vector3 _dragOffset;
     private Camera _mainCamera;
@@ -36,6 +37,7 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
         base.Start();
         _mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
 
         GenerateComplexBrokenName();
         GenerateRandomLoadSteps();
@@ -110,6 +112,8 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
                 fileNameTextMeshPro.text = _loadedFileName;
             }
 
+            if (_animator != null) _animator.enabled = true;
+
         }
         else
         {
@@ -118,6 +122,7 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
             {
                 fileNameTextMeshPro.text = brokenFileName;
             }
+            if (_animator != null) _animator.enabled = false;
         }
 
         if (curloadStepsTextMeshProUI != null)

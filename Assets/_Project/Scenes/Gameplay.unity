@@ -2730,7 +2730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FileSpawner
   _spawnCount: 3
   _coreFilePrefab: {fileID: 309410140686626182, guid: 4b626b9ad603f144d8eeff723f97dcc6, type: 3}
-  _spawnTable: {fileID: 11400000, guid: 20da73eca7a14584ba03153d9f5698eb, type: 2}
+  _spawnTable: {fileID: 11400000, guid: fe035a5e872e3874daee0366fe1141bf, type: 2}
   _coreFileDropRate: 10
   _guaranteedPityCount: 5
   _minBounds: {x: -9.62, y: -2.73}
