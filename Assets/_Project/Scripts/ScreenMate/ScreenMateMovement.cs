@@ -24,13 +24,23 @@ public class ScreenMateMovement : ScreenElements
     public float minIdleTime = 1f;
     public float maxIdleTime = 3f;
 
+    [Header("Animation Sprites")]
+    public Sprite idleSprite;           // ภาพตอนยืนเฉยๆ (1 frame)
+    public Sprite[] grabSprites;        // ภาพตอนโดนจับ (3 frames)
+    public Sprite[] walkSprites;        // ภาพตอนเดิน (4 frames)
+    public float animFrameRate = 0.15f; // ความเร็วในการเปลี่ยนเฟรม (วินาทีต่อเฟรม)
+
+    // ตัวแปรสำหรับคุม Animation
+    private float _animTimer = 0f;
+    private int _currentAnimFrame = 0;
+    private Sprite[] _currentAnimArray; // เก็บว่าตอนนี้กำลังเล่น Array ไหนอยู่
+
     private int movingDirection = 1;
     private float stateTimer = 0f;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     private bool _isGameOver = false;
 
     public override bool IsGroupSelectable => false;
-
 
     private void OnEnable()
     {
@@ -45,11 +55,12 @@ public class ScreenMateMovement : ScreenElements
     protected override void Start()
     {
         base.Start();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if (_spriteRenderer == null) _spriteRenderer = GetComponent<SpriteRenderer>();
         rb2D.freezeRotation = true;
         SetWalkState();
     }
 
+    // อัปเดตฟิสิกส์และการเปลี่ยน State
     private void FixedUpdate()
     {
         if (_isGameOver) return;
@@ -80,6 +91,75 @@ public class ScreenMateMovement : ScreenElements
                 rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
                 break;
         }
+    }
+
+    // 💡 อัปเดต Animation ภาพกราฟิกใน Update (ทำงานลื่นไหลกว่า FixedUpdate)
+    private void Update()
+    {
+        if (_isGameOver) return;
+
+        // เช็คว่าโดนจับ/คลิกลากอยู่หรือเปล่า (สถานะไม่ใช่ Normal)
+        if (element_state != ScreenElementState.Normal)
+        {
+            PlayAnimation(grabSprites); // เล่นอนิเมชันตอนโดนจับ
+        }
+        else
+        {
+            // ถ้าไม่โดนจับ ก็เล่นอนิเมชันตาม State ปัจจุบัน
+            switch (currentState)
+            {
+                case MateState.Walk:
+                    PlayAnimation(walkSprites);
+                    break;
+                case MateState.Idle:
+                case MateState.Falling:
+                    // โหมด Idle หรือ กำลังตก ให้ใช้ภาพเดียว
+                    SetSingleSprite(idleSprite);
+                    break;
+            }
+        }
+    }
+
+    // 💡 ฟังก์ชันจัดการแอนิเมชันแบบสลับภาพ
+    private void PlayAnimation(Sprite[] animArray)
+    {
+        if (animArray == null || animArray.Length == 0) return;
+
+        // ถ้าเปลี่ยนท่าทาง ให้รีเซ็ตเฟรมกลับไปที่ 0
+        if (_currentAnimArray != animArray)
+        {
+            _currentAnimArray = animArray;
+            _currentAnimFrame = 0;
+            _animTimer = 0f;
+            _spriteRenderer.sprite = animArray[0];
+            return;
+        }
+
+        // จับเวลาเพื่อเปลี่ยนภาพ
+        _animTimer += Time.deltaTime;
+        if (_animTimer >= animFrameRate)
+        {
+            _animTimer = 0f;
+            _currentAnimFrame++;
+
+            // วนลูปกลับไปภาพแรกถ้าเล่นจบ Array
+            if (_currentAnimFrame >= animArray.Length)
+            {
+                _currentAnimFrame = 0;
+            }
+
+            _spriteRenderer.sprite = animArray[_currentAnimFrame];
+        }
+    }
+
+    // 💡 ฟังก์ชันสำหรับตั้งภาพนิ่ง (1 เฟรม)
+    private void SetSingleSprite(Sprite singleSprite)
+    {
+        if (singleSprite == null) return;
+        
+        // เคลียร์ค่า Array เพื่อให้เวลาสลับกลับไปเดิน/โดนจับ มันจะได้เริ่มเฟรม 0 ใหม่
+        _currentAnimArray = null; 
+        _spriteRenderer.sprite = singleSprite;
     }
 
     private void HandleStateTimer()
@@ -131,12 +211,12 @@ public class ScreenMateMovement : ScreenElements
         _spriteRenderer.flipX = !_spriteRenderer.flipX;
     }
 
-    //keep
     private void HandleGameOver()
     {
         _isGameOver = true;
         rb2D.linearVelocity = Vector2.zero;
         currentState = MateState.Idle;
+        SetSingleSprite(idleSprite); // ให้มันยืนนิ่งๆ ตอน Game Over
         Debug.Log("[ScreenMateMovement] Game Over — Movement stopped.");
     }
 }
