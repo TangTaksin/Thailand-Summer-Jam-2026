@@ -150,7 +150,6 @@ public class BadFile : BaseFile, IStatModifier, IMovable
         if (CurLoadSteps == 0 && _currentHp == 0)
         {
             curloadStepsTextMeshProUI.text = "Del";
-            curloadStepsTextMeshProUI.color = Color.red;
         }
     }
 

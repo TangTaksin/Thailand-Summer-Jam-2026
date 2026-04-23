@@ -20,7 +20,6 @@ public class FirewallFile : BaseFile, IStatModifier
         if (CurLoadSteps == 0 && curloadStepsTextMeshProUI != null)
         {
             curloadStepsTextMeshProUI.text = "SHIELD";
-            curloadStepsTextMeshProUI.color = Color.blue;
         }
     }
 

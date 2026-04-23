@@ -30,8 +30,7 @@ public class CoreFile : BaseFile
         base.LoadFile();
         if (CurLoadSteps == 0 && curloadStepsTextMeshProUI != null)
         {
-            curloadStepsTextMeshProUI.text = "+CORE";
-            curloadStepsTextMeshProUI.color = Color.blue;
+            curloadStepsTextMeshProUI.text = "CORE";
         }
     }
 

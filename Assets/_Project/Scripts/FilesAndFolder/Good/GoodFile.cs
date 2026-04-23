@@ -20,7 +20,6 @@ public class GoodFile : BaseFile, IStatModifier
         if (CurLoadSteps == 0 && curloadStepsTextMeshProUI != null)
         {
             curloadStepsTextMeshProUI.text = "+HEAL";
-            curloadStepsTextMeshProUI.color = Color.green;
         }
     }
 }
