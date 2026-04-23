@@ -115,6 +115,8 @@ public class CursorManager : MonoBehaviour
             isGroupSelecting = true;
             EnableCollider(mouseClickPos);
         }
+        // AudioManager.Instance.PlaySFX("Click");
+
     }
 
     void ClickRelease(InputAction.CallbackContext ctx)
