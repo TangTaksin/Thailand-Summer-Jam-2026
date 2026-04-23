@@ -46,7 +46,7 @@ public class CursorManager : MonoBehaviour
     {
         action_point.performed -= PointerUpdate;
         action_click.performed -= Click;
-        action_click.canceled -= ClickRelease; //แก้ += เป็น -=
+        action_click.canceled -= ClickRelease;
         action_rightClick.performed -= RightClick;
     }
 
@@ -115,7 +115,8 @@ public class CursorManager : MonoBehaviour
             isGroupSelecting = true;
             EnableCollider(mouseClickPos);
         }
-        // AudioManager.Instance.PlaySFX("Click");
+
+        AudioManager.Instance.PlaySFX("Click");
 
     }
 
@@ -147,7 +148,7 @@ public class CursorManager : MonoBehaviour
 
     void RightClick(InputAction.CallbackContext ctx)
     {
-       if (IsPointerOverUI()) return;
+        if (IsPointerOverUI()) return;
 
         var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var found = Physics2D.OverlapCircle(mousePos, .1f);
@@ -182,6 +183,7 @@ public class CursorManager : MonoBehaviour
         {
             ClearSelection();
         }
+        AudioManager.Instance.PlaySFX("Click");
     }
 
     #endregion

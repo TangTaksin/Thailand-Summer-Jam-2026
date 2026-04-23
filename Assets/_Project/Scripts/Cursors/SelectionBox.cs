@@ -138,12 +138,14 @@ public class SelectionBox : ScreenElements
                 {
                     // ลบได้ -> ตัดความสัมพันธ์และทำลายทิ้ง
                     file.transform.SetParent(null);
+                    AudioManager.Instance.PlaySFX("Delete");
                     Destroy(file.gameObject);
                 }
                 else
                 {
                     // ลบไม่ได้ (เช่น JunkFile) -> เก็บไว้เหมือนเดิม
                     remainingElements.Add(ele);
+                    AudioManager.Instance.PlaySFX("CantDelete");
                 }
             }
             else

@@ -16,15 +16,19 @@ public class ActionCommands : MonoBehaviour
     public void ExecuteNewFile()
     {
         OnNewFileCommand?.Invoke();
+        AudioManager.Instance.PlaySFX("Click");
+
     }
 
     public void ExecuteRefresh()
     {
         OnRefreshCommand?.Invoke();
+        AudioManager.Instance.PlaySFX("Refresh");
     }
 
     public void ExecuteDelete()
     {
         OnDeleteCommand?.Invoke();
+        AudioManager.Instance.PlaySFX("Delete");
     }
 }
