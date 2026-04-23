@@ -68,13 +68,17 @@ public class BinFolder : BaseFolder
         BaseFile[] allFiles = FindObjectsByType<BaseFile>(FindObjectsInactive.Exclude);
         foreach (BaseFile file in allFiles)
         {
-            if (file.gameObject != this.gameObject)
+            bool isNotBin = file.gameObject != this.gameObject;
+            bool isNotScreenMate = file.GetComponent<ScreenMateMovement>() == null;
+
+
+            if (isNotBin && isNotScreenMate)
             {
                 Destroy(file.gameObject);
             }
         }
 
-        
+
     }
 
     public override void ReceiveFile(BaseFile droppedFile)
