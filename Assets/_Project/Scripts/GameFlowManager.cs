@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,13 +24,18 @@ public class GameFlowManager : MonoBehaviour
     {
         ActionCommands.OnGameOver += HandleGameOver;
         ActionCommands.OnFormatCommand += HandleWin;
+        ActionCommands.OnScreenMateDeleted += HandleScreenMateDeleted;
+
     }
 
     private void OnDisable()
     {
         ActionCommands.OnGameOver -= HandleGameOver;
         ActionCommands.OnFormatCommand -= HandleWin;
+        ActionCommands.OnScreenMateDeleted -= HandleScreenMateDeleted;
     }
+
+
 
     private void HandleWin()
     {
@@ -74,5 +80,24 @@ public class GameFlowManager : MonoBehaviour
     {
         SceneManager.LoadScene("StartMenu");
 
+    }
+
+    private void HandleScreenMateDeleted()
+    {
+        StartCoroutine(GlobalDelayedGameOver(5f));
+
+    }
+
+    private IEnumerator GlobalDelayedGameOver(float delay)
+    {
+        Debug.Log("Waiting for Game Over sequence...");
+        yield return new WaitForSeconds(delay);
+
+        ActionCommands.OnGameOver?.Invoke();
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX("GameOver");
+
+        Time.timeScale = 0f;
     }
 }

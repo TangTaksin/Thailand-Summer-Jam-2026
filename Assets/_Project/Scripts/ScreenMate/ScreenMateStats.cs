@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -161,4 +162,19 @@ public class ScreenMateStats : MonoBehaviour
 
         Debug.Log("[ScreenMateStats] DEBUG: Cortisol reset to 0.");
     }
+
+
+    private void OnDestroy()
+    {
+        if (!_isGameOver)
+        {
+            ActionCommands.OnScreenMateDeleted?.Invoke();
+        } else
+        {
+            Debug.LogError("Game Over!");
+        }
+
+    }
+
+
 }
