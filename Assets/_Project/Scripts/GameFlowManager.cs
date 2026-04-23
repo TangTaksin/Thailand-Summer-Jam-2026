@@ -72,7 +72,7 @@ public class GameFlowManager : MonoBehaviour
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("Gameplay");
+        SceneManager.LoadScene("StartMenu");
 
     }
 }

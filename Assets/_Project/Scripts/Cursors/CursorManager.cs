@@ -56,6 +56,9 @@ public class CursorManager : MonoBehaviour
 
     void PointerUpdate(InputAction.CallbackContext ctx)
     {
+        if (!mainCam)
+            mainCam = Camera.main;
+
         var mouseScrPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
         var mouseVelo = Input.mousePositionDelta * Time.deltaTime;
 
