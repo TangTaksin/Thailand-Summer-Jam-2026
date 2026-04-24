@@ -105,7 +105,7 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
         }
     }
 
-    # region LoadGameplaySequence
+    #region LoadGameplaySequence
 
     void EnterGameplay()
     {
@@ -130,7 +130,8 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
     void UnloadStartScene()
     {
         Debug.Log("Unloading Start Menu Scene ");
-        scrollGroupObject.transform.DOKill();
+        scrollGroupObject.transform.DOMove(scroll_origin_position, 0.4f).SetEase(Ease.OutExpo);
+        drag_progress = 0;
         backgroundImage.DOKill();
         SceneManager.UnloadSceneAsync("StartMenu");
     }

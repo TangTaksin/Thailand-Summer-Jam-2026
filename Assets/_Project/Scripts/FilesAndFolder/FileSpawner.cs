@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using DG.Tweening;
 
 public class FileSpawner : MonoBehaviour
 {
@@ -27,6 +28,10 @@ public class FileSpawner : MonoBehaviour
     [Header("System Notification Text")]
     [SerializeField] private TextMeshPro _terminalText;
     private Coroutine _messageRoutine;
+
+    [Header("Animation Settings")]
+    [SerializeField] private float _spawnAnimDuration = 0.5f;
+    [SerializeField] private Ease _spawnAnimEase = Ease.OutBack;
 
     private int _currentPityCounter;
 
@@ -119,7 +124,18 @@ public class FileSpawner : MonoBehaviour
     private void SpawnAtPosition(GameObject prefab, Vector3 position)
     {
         if (prefab == null) return;
-        Instantiate(prefab, position, Quaternion.identity);
+
+        // สร้าง Object ขึ้นมาก่อน
+        GameObject spawnedObj = Instantiate(prefab, position, Quaternion.identity);
+
+        // เก็บสเกลเป้าหมายเดิมของ Prefab เอาไว้
+        Vector3 targetScale = spawnedObj.transform.localScale;
+
+        // เซ็ตสเกลให้เป็น 0 ก่อน (ล่องหน/เล็กสุด)
+        spawnedObj.transform.localScale = Vector3.zero;
+
+        // สั่งให้ DOTween ค่อยๆ ขยายสเกลกลับไปที่ targetScale
+        spawnedObj.transform.DOScale(targetScale, _spawnAnimDuration).SetEase(_spawnAnimEase);
     }
 
     private Vector3 GetRandomSpawnPos()
