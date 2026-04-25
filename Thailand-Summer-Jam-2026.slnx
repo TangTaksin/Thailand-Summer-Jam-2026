@@ -1,5 +1,6 @@
 ﻿<Solution>
   <Project Path="FullscreenEditor.csproj" />
   <Project Path="CodeStage.AFPSCounter.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="CodeStage.AFPSCounter.Editor.csproj" />
 </Solution>
