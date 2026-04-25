@@ -64,7 +64,7 @@ public class ContextMenu : MonoBehaviour
             }
             else
             {
-                refreshChargesText.color = Color.white;
+                refreshChargesText.color = Color.black;
             }
         }
     }
