@@ -1,17 +1,18 @@
 using UnityEngine;
+public enum ScreenElementState
+{
+    Normal,
+    Freeze
+}
 
 public class ScreenElements : MonoBehaviour
 {
     protected Rigidbody2D rb2D;
-    Collider2D _collider;
+    protected Collider2D _collider;
     protected Vector3 cursorOffset;
 
-    public enum ScreenElementState
-    {
-        Normal,
-        Freeze
-    }
-    protected ScreenElementState element_state;
+
+    public ScreenElementState element_state;
     public virtual bool IsGroupSelectable => true;
 
     protected virtual void Start()
@@ -37,14 +38,14 @@ public class ScreenElements : MonoBehaviour
 
     protected virtual void OnNormalState()
     {
-         if (rb2D != null)
+        if (rb2D != null)
             rb2D.gravityScale = 1f;
     }
 
     protected virtual void OnFreezeState()
     {
-         if (rb2D != null)
-         {
+        if (rb2D != null)
+        {
             rb2D.linearVelocity = Vector2.zero;
             rb2D.gravityScale = 0f;
         }

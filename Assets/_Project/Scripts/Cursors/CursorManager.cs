@@ -133,7 +133,7 @@ public class CursorManager : MonoBehaviour
             //reset state ของทุก element ที่ถูก freeze ตอน drag
             foreach (var ele in inSelection)
             {
-                ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+                ele.StateOverride(ScreenElementState.Normal);
             }
         }
 
@@ -207,7 +207,7 @@ public class CursorManager : MonoBehaviour
         if (!inSelection.Contains(scr_ele))
         {
             inSelection.Add(scr_ele);
-            scr_ele.StateOverride(ScreenElements.ScreenElementState.Freeze);
+            scr_ele.StateOverride(ScreenElementState.Freeze);
 
             if (isGroupSelecting)
                 selBox.UpdateBoxBound(inSelection.ToArray());
@@ -219,7 +219,7 @@ public class CursorManager : MonoBehaviour
         if (inSelection.Contains(scr_ele))
         {
             inSelection.Remove(scr_ele);
-            scr_ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+            scr_ele.StateOverride(ScreenElementState.Normal);
 
             if (isGroupSelecting)
                 selBox.UpdateBoxBound(inSelection.ToArray());
@@ -230,7 +230,7 @@ public class CursorManager : MonoBehaviour
     {
         foreach (var ele in inSelection)
         {
-            ele.StateOverride(ScreenElements.ScreenElementState.Normal);
+            ele.StateOverride(ScreenElementState.Normal);
         }
 
         selBox.HideBox();

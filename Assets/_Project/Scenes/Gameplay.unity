@@ -2246,6 +2246,7 @@ MonoBehaviour:
   bonusPerNewFile: 6
   refreshChargesText: {fileID: 1301179777}
   textOffset: {x: 30, y: -30, z: 0}
+  _screenMateMovement: {fileID: 1553874461}
 --- !u!1 &481797417
 GameObject:
   m_ObjectHideFlags: 0
@@ -5816,6 +5817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e0086149b639943a9d5cab7c162399, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectionBox
+  element_state: 0
   insideTheBox: []
 --- !u!50 &1507516023
 Rigidbody2D:
@@ -6471,38 +6473,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4673b6a16f9726f4aa29dcc32b937bf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenMateMovement
-  currentState: 0
-  moveSpeed: 1.5
-  leftBound: -10
-  rightBound: 10
-  minWalkTime: 2
-  maxWalkTime: 6
-  minIdleTime: 1
-  maxIdleTime: 3
-  idleSprite: {fileID: -4805574202603114754, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  grabSprites:
-  - {fileID: -7511864367031893041, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -7200107764607671945, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -7511864367031893041, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: 394217170084596244, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  walkSprites:
-  - {fileID: 3147216338404973664, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -5682163732853062392, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: 4099350400623764521, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: 6735652113031384664, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  animFrameRate: 0.15
-  invincibleIdleSprite: {fileID: -5509999411772579009, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  invincibleGrabSprites:
-  - {fileID: 2132030797773873806, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -4520922005475432156, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: 2132030797773873806, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -570052869675272401, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  invincibleWalkSprites:
-  - {fileID: 7600339518188466735, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -3002702510316318242, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: 8309402353048184828, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  - {fileID: -1801735910921461494, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
-  _spriteRenderer: {fileID: 1553874459}
+  element_state: 0
+  _currentState: 0
+  _moveSpeed: 2
+  _leftBound: -7
+  _rightBound: 7
+  _minWalkTime: 2
+  _maxWalkTime: 6
+  _minIdleTime: 1
+  _maxIdleTime: 3
+  _animFrameRate: 0.15
+  _normalSprites:
+    idleSprite: {fileID: -4805574202603114754, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    grabSprites:
+    - {fileID: -7511864367031893041, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -7200107764607671945, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -7511864367031893041, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: 394217170084596244, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    walkSprites:
+    - {fileID: 3147216338404973664, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -5682163732853062392, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: 4099350400623764521, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: 6735652113031384664, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  _invincibleSprites:
+    idleSprite: {fileID: -5509999411772579009, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    grabSprites:
+    - {fileID: 2132030797773873806, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -4520922005475432156, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: 2132030797773873806, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -570052869675272401, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    walkSprites:
+    - {fileID: 7600339518188466735, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -3002702510316318242, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: 8309402353048184828, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+    - {fileID: -1801735910921461494, guid: fca3e2256793728478cc9b4d5090bce6, type: 3}
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _groundCheckDistance: 0.1
 --- !u!70 &1553874462
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -6598,6 +6606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6999e0c0f9236854cb196aac4e6cd0da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseFile
+  element_state: 0
   ignoreRefreshCommand: 1
   minLoadSteps: 3
   maxLoadSteps: 7
@@ -7666,7 +7675,7 @@ GameObject:
   - component: {fileID: 1725462982}
   - component: {fileID: 1725462981}
   - component: {fileID: 1725462983}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: TaskBarCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
