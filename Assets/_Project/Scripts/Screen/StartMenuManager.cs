@@ -32,7 +32,10 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
     {
         Time.timeScale = 1;
         main_cam = Camera.main;
+    }
 
+    void Start()
+    {
         scroll_origin_position = scrollGroupObject.transform.position;
     }
 
@@ -129,11 +132,14 @@ public class StartMenuManager : MonoBehaviour, IPointerDownHandler, IPointerMove
 
     void UnloadStartScene()
     {
-        Debug.Log("Unloading Start Menu Scene ");
-        scrollGroupObject.transform.DOMove(scroll_origin_position, 0.4f).SetEase(Ease.OutExpo);
+        Debug.Log("Unloading Start Menu Scene");
+
+        scrollGroupObject.transform.position = scroll_origin_position;
         drag_progress = 0;
+        scrollGroupObject.SetActive(false);
+        backgroundImage.gameObject.SetActive(false);
         backgroundImage.DOKill();
-        SceneManager.UnloadSceneAsync("StartMenu");
+        SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 
     #endregion
