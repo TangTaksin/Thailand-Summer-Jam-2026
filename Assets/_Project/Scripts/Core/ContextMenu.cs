@@ -25,8 +25,9 @@ public class ContextMenu : MonoBehaviour
     private BinFolder _targetBin;
     private CoreFolder _targetCoreFolder;
     private BaseFile hoveredFile;
-
     public static Action OnContextSelect;
+    [SerializeField] private ScreenMateMovement _screenMateMovement;
+
 
     private void Start()
     {
@@ -176,6 +177,7 @@ public class ContextMenu : MonoBehaviour
 
     public void OnClick_NewFileCommand()
     {
+        _screenMateMovement.StateOverride(ScreenElementState.Normal);
         refreshCharges = Mathf.Min(refreshCharges + bonusPerNewFile, maxreFreshCount);
         ActionCommands.OnNewFileCommand?.Invoke();
         OnContextSelect?.Invoke();
@@ -185,6 +187,7 @@ public class ContextMenu : MonoBehaviour
 
     public void OnClick_RefreshCommand()
     {
+        _screenMateMovement.StateOverride(ScreenElementState.Normal);
         if (refreshCharges > 0)
         {
             refreshCharges--;

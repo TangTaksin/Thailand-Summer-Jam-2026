@@ -1,53 +1,55 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
 public class ScreenMateMovement : ScreenElements
 {
-    public enum MateState
+    public enum MateState { Walk, Idle, Falling }
+
+    [System.Serializable]
+    public struct SpriteSet
     {
-        Walk,
-        Idle,
-        Falling
+        public Sprite idleSprite;
+        public Sprite[] grabSprites;
+        public Sprite[] walkSprites;
     }
 
     [Header("Current State")]
-    public MateState currentState = MateState.Walk;
+    [SerializeField] private MateState _currentState = MateState.Walk;
+    public MateState CurrentState => _currentState;
 
     [Header("Movement Settings")]
-    public float moveSpeed = 2f;
-    public float leftBound = -7f;
-    public float rightBound = 7f;
+    [SerializeField] private float _moveSpeed = 2f;
+    [SerializeField] private float _leftBound = -7f;
+    [SerializeField] private float _rightBound = 7f;
 
     [Header("State Settings")]
-    public float minWalkTime = 2f;
-    public float maxWalkTime = 6f;
-    public float minIdleTime = 1f;
-    public float maxIdleTime = 3f;
+    [SerializeField] private float _minWalkTime = 2f;
+    [SerializeField] private float _maxWalkTime = 6f;
+    [SerializeField] private float _minIdleTime = 1f;
+    [SerializeField] private float _maxIdleTime = 3f;
 
-    [Header("Animation Sprites (Normal)")]
-    public Sprite idleSprite;           // ภาพตอนยืนเฉยๆ ปกติ
-    public Sprite[] grabSprites;        // ภาพตอนโดนจับ ปกติ
-    public Sprite[] walkSprites;        // ภาพตอนเดิน ปกติ
-    public float animFrameRate = 0.15f; 
+    [Header("Animation Settings")]
+    [SerializeField] private float _animFrameRate = 0.15f;
+    [SerializeField] private SpriteSet _normalSprites;
+    [SerializeField] private SpriteSet _invincibleSprites;
 
-    // 💡 เพิ่มชุดภาพสำหรับโหมดอมตะ
-    [Header("Animation Sprites (Invincible)")]
-    public Sprite invincibleIdleSprite;    // ภาพตอนยืนเฉยๆ โหมดอมตะ
-    public Sprite[] invincibleGrabSprites; // ภาพตอนโดนจับ โหมดอมตะ
-    public Sprite[] invincibleWalkSprites; // ภาพตอนเดิน โหมดอมตะ
+    [Header("Ground Detection")]
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private float _groundCheckDistance = 0.1f;
+    [SerializeField] private float _shellRadius = 0.05f;
 
-    // ตัวแปรสำหรับคุม Animation
+  
+    private SpriteRenderer _spriteRenderer;
+    private ScreenMateStats _stats;
+
+  
     private float _animTimer = 0f;
     private int _currentAnimFrame = 0;
-    private Sprite[] _currentAnimArray; 
-
-    private int movingDirection = 1;
-    private float stateTimer = 0f;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+    private Sprite[] _currentAnimArray;
+    private int _movingDirection = 1;
+    private float _stateTimer = 0f;
     private bool _isGameOver = false;
-
-    // 💡 ตัวแปรเชื่อมต่อไปยังสคริปต์ Stats เพื่อเช็คสถานะอมตะ
-    private ScreenMateStats _stats;
+    private bool _isGrounded;
 
     public override bool IsGroupSelectable => false;
 
@@ -64,30 +66,23 @@ public class ScreenMateMovement : ScreenElements
     protected override void Start()
     {
         base.Start();
-        if (_spriteRenderer == null) _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _stats = GetComponent<ScreenMateStats>();
         
-        // 💡 ค้นหาสคริปต์ ScreenMateStats ที่อยู่ในตัวละครนี้
-        _stats = GetComponent<ScreenMateStats>(); 
+        if (rb2D != null) rb2D.freezeRotation = true;
         
-        rb2D.freezeRotation = true;
         SetWalkState();
     }
 
     private void FixedUpdate()
     {
-        if (_isGameOver) return;
-        if (element_state != ScreenElementState.Normal) return;
+        if (_isGameOver || element_state != ScreenElementState.Normal) return;
 
-        if (rb2D.linearVelocity.y < -0.1f)
-        {
-            currentState = MateState.Falling;
-        }
-        else if (currentState == MateState.Falling && Mathf.Abs(rb2D.linearVelocity.y) <= 0.05f)
-        {
-            SetWalkState();
-        }
+        CheckGround();
+        UpdateStateByPhysics();
 
-        switch (currentState)
+        switch (_currentState)
         {
             case MateState.Walk:
                 HandleStateTimer();
@@ -95,12 +90,9 @@ public class ScreenMateMovement : ScreenElements
                 break;
 
             case MateState.Idle:
-                HandleStateTimer();
-                rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
-                break;
-
             case MateState.Falling:
-                rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
+                HandleStateTimer();
+                StopHorizontalMovement();
                 break;
         }
     }
@@ -108,33 +100,119 @@ public class ScreenMateMovement : ScreenElements
     private void Update()
     {
         if (_isGameOver) return;
+        UpdateAnimation();
+    }
 
-        // 💡 เช็คว่าตอนนี้อยู่ในโหมดอมตะหรือไม่
+    #region Movement & State Logic
+
+    private void CheckGround()
+    {
+        if (_collider == null) return;
+
+        Vector2 origin = new Vector2(_collider.bounds.center.x, _collider.bounds.min.y + _shellRadius);
+        float distance = _groundCheckDistance + _shellRadius;
+
+        _isGrounded = Physics2D.Raycast(origin, Vector2.down, distance, _groundLayer);
+
+        Debug.DrawRay(origin, Vector2.down * distance, _isGrounded ? Color.green : Color.red);
+    }
+
+    private void UpdateStateByPhysics()
+    {
+        if (rb2D == null) return;
+
+        if (!_isGrounded && rb2D.linearVelocity.y < -0.1f)
+        {
+            _currentState = MateState.Falling;
+        }
+        else if (_isGrounded && _currentState == MateState.Falling)
+        {
+            rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 0f);
+            SetWalkState();
+        }
+    }
+
+    private void HandleStateTimer()
+    {
+        if (_currentState == MateState.Falling) return;
+
+        _stateTimer -= Time.fixedDeltaTime;
+        if (_stateTimer <= 0)
+        {
+            if (_currentState == MateState.Idle) SetWalkState();
+            else if (_currentState == MateState.Walk) SetIdleState();
+        }
+    }
+
+    private void SetWalkState()
+    {
+        _currentState = MateState.Walk;
+        _stateTimer = Random.Range(_minWalkTime, _maxWalkTime);
+    }
+
+    private void SetIdleState()
+    {
+        _currentState = MateState.Idle;
+        _stateTimer = Random.Range(_minIdleTime, _maxIdleTime);
+    }
+
+    private void Patrol()
+    {
+        if (rb2D == null) return;
+
+        rb2D.linearVelocity = new Vector2(_movingDirection * _moveSpeed, rb2D.linearVelocity.y);
+
+        if (transform.position.x >= _rightBound && _movingDirection == 1)
+        {
+            SetDirection(-1);
+        }
+        else if (transform.position.x <= _leftBound && _movingDirection == -1)
+        {
+            SetDirection(1);
+        }
+    }
+
+    private void SetDirection(int dir)
+    {
+        _movingDirection = dir;
+        _spriteRenderer.flipX = (_movingDirection == -1);
+    }
+
+    private void StopHorizontalMovement()
+    {
+        if (rb2D != null)
+            rb2D.linearVelocity = new Vector2(0, rb2D.linearVelocity.y);
+    }
+
+    #endregion
+
+    #region Animation Logic
+
+    private void UpdateAnimation()
+    {
         bool isInvincible = (_stats != null && _stats._isInvincible);
+        SpriteSet currentSet = isInvincible ? _invincibleSprites : _normalSprites;
 
         if (element_state != ScreenElementState.Normal)
         {
-            // ถ้าเป็นอมตะ ให้เล่นภาพ invincibleGrab ถ้าไม่ ให้เล่น grab ปกติ
-            PlayAnimation(isInvincible ? invincibleGrabSprites : grabSprites);
+            PlayAnimation(currentSet.grabSprites);
+            return;
         }
-        else
+
+        switch (_currentState)
         {
-            switch (currentState)
-            {
-                case MateState.Walk:
-                    PlayAnimation(isInvincible ? invincibleWalkSprites : walkSprites);
-                    break;
-                case MateState.Idle:
-                case MateState.Falling:
-                    SetSingleSprite(isInvincible ? invincibleIdleSprite : idleSprite);
-                    break;
-            }
+            case MateState.Walk:
+                PlayAnimation(currentSet.walkSprites);
+                break;
+            case MateState.Idle:
+            case MateState.Falling:
+                SetSingleSprite(currentSet.idleSprite);
+                break;
         }
     }
 
     private void PlayAnimation(Sprite[] animArray)
     {
-        // 💡 ป้องกัน Error ถ้าลืมใส่ภาพใน Inspector
         if (animArray == null || animArray.Length == 0) return;
 
         if (_currentAnimArray != animArray)
@@ -147,16 +225,10 @@ public class ScreenMateMovement : ScreenElements
         }
 
         _animTimer += Time.deltaTime;
-        if (_animTimer >= animFrameRate)
+        if (_animTimer >= _animFrameRate)
         {
             _animTimer = 0f;
-            _currentAnimFrame++;
-
-            if (_currentAnimFrame >= animArray.Length)
-            {
-                _currentAnimFrame = 0;
-            }
-
+            _currentAnimFrame = (_currentAnimFrame + 1) % animArray.Length;
             _spriteRenderer.sprite = animArray[_currentAnimFrame];
         }
     }
@@ -164,70 +236,21 @@ public class ScreenMateMovement : ScreenElements
     private void SetSingleSprite(Sprite singleSprite)
     {
         if (singleSprite == null) return;
-        
-        _currentAnimArray = null; 
+        _currentAnimArray = null;
         _spriteRenderer.sprite = singleSprite;
     }
-
-    private void HandleStateTimer()
-    {
-        stateTimer -= Time.fixedDeltaTime;
-        if (stateTimer <= 0)
-        {
-            if (currentState == MateState.Idle)
-            {
-                SetWalkState();
-            }
-            else if (currentState == MateState.Walk)
-            {
-                SetIdleState();
-            }
-        }
-    }
-
-    private void SetWalkState()
-    {
-        currentState = MateState.Walk;
-        stateTimer = Random.Range(minWalkTime, maxWalkTime);
-    }
-
-    private void SetIdleState()
-    {
-        currentState = MateState.Idle;
-        stateTimer = Random.Range(minIdleTime, maxIdleTime);
-    }
-
-    private void Patrol()
-    {
-        rb2D.linearVelocity = new Vector2(movingDirection * moveSpeed, rb2D.linearVelocity.y);
-
-        if (transform.position.x >= rightBound && movingDirection == 1)
-        {
-            movingDirection = -1;
-            FlipSprite();
-        }
-        else if (transform.position.x <= leftBound && movingDirection == -1)
-        {
-            movingDirection = 1;
-            FlipSprite();
-        }
-    }
-
-    private void FlipSprite()
-    {
-        _spriteRenderer.flipX = !_spriteRenderer.flipX;
-    }
+    #endregion
 
     private void HandleGameOver()
     {
         _isGameOver = true;
-        rb2D.linearVelocity = Vector2.zero;
-        currentState = MateState.Idle;
-        
-        // 💡 เช็คสถานะตอนตายด้วยว่าเป็นอมตะอยู่หรือเปล่า
+        StopHorizontalMovement();
+        _currentState = MateState.Idle;
+
         bool isInvincible = (_stats != null && _stats._isInvincible);
-        SetSingleSprite(isInvincible ? invincibleIdleSprite : idleSprite); 
-        
-        Debug.Log("[ScreenMateMovement] Game Over — Movement stopped.");
+        SpriteSet finalSet = isInvincible ? _invincibleSprites : _normalSprites;
+
+        SetSingleSprite(finalSet.idleSprite);
+        Debug.Log($"<color=red>[{name}]</color> Game Over - Movement stopped.");
     }
 }
