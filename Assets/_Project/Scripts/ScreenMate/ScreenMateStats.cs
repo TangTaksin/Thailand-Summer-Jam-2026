@@ -104,7 +104,6 @@ public class ScreenMateStats : MonoBehaviour
         if (CurrentCortisol >= _maxCortisol)
         {
             _isGameOver = true;
-            Debug.LogError("Game Over!");
             AudioManager.Instance.PlaySFX("GameOver");
             ActionCommands.OnGameOver?.Invoke();
         }
