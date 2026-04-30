@@ -8,6 +8,7 @@ public class CheckGameOver : MonoBehaviour
         {
             Debug.Log("Game Over");
             ActionCommands.OnGameOver();
+            return;
         }
     }
 }

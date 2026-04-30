@@ -41,8 +41,12 @@ public class GameFlowManager : MonoBehaviour
     {
         if (_isSceneLoading) return;
         _isSceneLoading = true;
-        DOTween.KillAll();
-        LoadNextScene();
+
+        DOTween.Kill(gameObject);
+        if (_gameOverPanel != null)
+            DOTween.Kill(_gameOverPanel);
+
+        StartCoroutine(LoadSceneSafe("EndScene"));
     }
 
     private void HandleGameOver()
@@ -91,7 +95,7 @@ public class GameFlowManager : MonoBehaviour
     private IEnumerator GlobalDelayedGameOver(float delay)
     {
         Debug.Log("Waiting for Game Over sequence...");
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(delay);
 
         ActionCommands.OnGameOver?.Invoke();
 
@@ -99,5 +103,11 @@ public class GameFlowManager : MonoBehaviour
             AudioManager.Instance.PlaySFX("GameOver");
 
         Time.timeScale = 0f;
+    }
+
+    private IEnumerator LoadSceneSafe(string scene)
+    {
+        yield return null;
+        SceneManager.LoadScene(scene);
     }
 }
