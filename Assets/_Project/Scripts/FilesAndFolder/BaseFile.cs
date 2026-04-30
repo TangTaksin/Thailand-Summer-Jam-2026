@@ -32,13 +32,10 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
     protected SpriteRenderer spriteRenderer;
     protected Animator _animator;
 
-    private Vector3 _dragOffset;
-    private Camera _mainCamera;
 
     protected override void Start()
     {
         base.Start();
-        _mainCamera = Camera.main;
         spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
 
@@ -60,7 +57,6 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
 
     public virtual void Refresh()
     {
-        // 💡 2. ดักไว้ตรงนี้ ถ้าตั้งค่าให้เมิน (true) ก็จะเด้งออกจากฟังก์ชันไปเลย ไม่ลดค่า Load Steps
         if (ignoreRefreshCommand) return; 
         
         ReduceloadSteps();
@@ -137,22 +133,6 @@ public class BaseFile : ScreenElements, IRefreshable, IDeletable
 
         }
     }
-
-    protected virtual void OnMouseDown()
-    {
-        // Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // _dragOffset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
-    }
-
-    // protected virtual void OnMouseDrag()
-    // {
-    //     Vector3 mousePos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
-    //     transform.position = new Vector3(
-    //         mousePos.x + _dragOffset.x,
-    //         mousePos.y + _dragOffset.y,
-    //         transform.position.z
-    //     );
-    // }
 
     protected virtual void OnMouseUp()
     {
