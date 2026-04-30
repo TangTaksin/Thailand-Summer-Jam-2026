@@ -45,6 +45,9 @@ public class FileSpawner : MonoBehaviour
     {
         ActionCommands.OnNewFileCommand -= SpawnRandomFile;
         ActionCommands.OnFileEaten -= HandleCoreFileDrop;
+        
+        if (_messageRoutine != null)
+            StopCoroutine(_messageRoutine);
     }
 
     private void Update()
@@ -151,10 +154,14 @@ public class FileSpawner : MonoBehaviour
 
     private IEnumerator ShowMessageRoutine(string msg, float duration)
     {
+        if (_terminalText == null) yield break;
+
         _terminalText.text = msg;
         _terminalText.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
+
+        if (_terminalText == null) yield break;
 
         _terminalText.gameObject.SetActive(false);
     }
@@ -166,4 +173,5 @@ public class FileSpawner : MonoBehaviour
         Vector3 size = new Vector3(_maxBounds.x - _minBounds.x, _maxBounds.y - _minBounds.y, 0f);
         Gizmos.DrawWireCube(center, size);
     }
+
 }
